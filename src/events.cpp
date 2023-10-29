@@ -26,6 +26,8 @@
 
 #include "tier0/memdbgon.h"
 #include "playermanager.h"
+#include "entity/ccsplayercontroller.h"
+#include "adminsystem.h"
 
 extern IGameEventManager2 *g_gameEventManager;
 extern IServerGameClients *g_pSource2GameClients;
@@ -62,46 +64,9 @@ void UnregisterEventListeners()
 	g_vecEventListeners.Purge();
 }
 
-// CONVAR_TODO
-bool g_bForceCT = true;
-
-CON_COMMAND_F(c_force_ct, "toggle forcing CTs on every round", FCVAR_SPONLY | FCVAR_LINKED_CONCOMMAND)
-{
-	if (args.ArgC() > 1)
-		g_bForceCT = V_StringToBool(args[1], true);
-
-	Message("Forcing CTs on every round is now %s.\n", g_bForceCT ? "ON" : "OFF");
-}
-
-GAME_EVENT_F(round_prestart)
-{
-	if (!g_bForceCT)
-		return;
-
-	for (int i = 0; i < gpGlobals->maxClients; i++)
-	{
-		CCSPlayerController* pController = CCSPlayerController::FromSlot(i);
-
-		// Only do this for Ts, ignore CTs and specs
-		if (!pController || pController->m_iTeamNum() != CS_TEAM_T)
-			continue;
-
-		pController->SwitchTeam(CS_TEAM_CT);
-	}
-}
-
-bool g_bBlockTeamMessages = true;
-
-CON_COMMAND_F(c_block_team_messages, "toggle team messages", FCVAR_SPONLY | FCVAR_LINKED_CONCOMMAND)
-{
-	if (args.ArgC() > 1)
-		g_bBlockTeamMessages = V_StringToBool(args[1], true);
-}
 
 GAME_EVENT_F(player_team)
 {
-	// Remove chat message for team changes
-	if (g_bBlockTeamMessages)
 		pEvent->SetBool("silent", true);
 }
 
@@ -114,7 +79,7 @@ GAME_EVENT_F(player_spawn)
 	if (!pController)
 		return;
 
-	int iPlayer = pController->GetPlayerSlot();
+		int iPlayer = pController->GetPlayerSlot();
 		ZEPlayer* pZEPlayer = g_playerManager->GetPlayer(iPlayer);
 
 	if (pZEPlayer)
@@ -138,6 +103,49 @@ GAME_EVENT_F(player_spawn)
 		if (!pPawn || !pPawn->IsAlive())
 			return -1.0f;
 
+		if(!pZEPlayer)
+		return;
+
+		if (pZEPlayer->IsAdminFlagSet(ADMFLAG_CUSTOM1))
+        {
+            pController->m_szClan("[HELPER]");
+        }
+        else if (pZEPlayer->IsAdminFlagSet(ADMFLAG_CUSTOM2))
+        {
+            pController->m_szClan("[ADMINISTRATOR]");
+        }
+        else if (pZEPlayer->IsAdminFlagSet(ADMFLAG_CUSTOM3))
+        {
+            pController->m_szClan("[MODERATOR]");
+        }
+        else if (pZEPlayer->IsAdminFlagSet(ADMFLAG_CUSTOM4))
+        {
+            pController->m_szClan("[VETERAN]");
+        }
+        else if (pZEPlayer->IsAdminFlagSet(ADMFLAG_CUSTOM5))
+        {
+            pController->m_szClan("[MANAGER]");
+        }
+        else if (pZEPlayer->IsAdminFlagSet(ADMFLAG_CUSTOM6))
+        {
+            pController->m_szClan("[CO-OWNER]");
+        }
+		else if (pZEPlayer->IsAdminFlagSet(ADMFLAG_CUSTOM7))
+        {
+            pController->m_szClan("[TESTER]");
+        }
+		else if (pZEPlayer->IsAdminFlagSet(ADMFLAG_CUSTOM8))
+        {
+            pController->m_szClan("[SUPERVIZOR]");
+        }
+        else if (pZEPlayer->IsAdminFlagSet(ADMFLAG_CHEATS))
+        {
+            pController->m_szClan("[OWNER]");
+        }
+        else {
+            pController->m_szClan("[Player]");
+        }	
+
 		pPawn->m_pCollision->m_collisionAttribute().m_nCollisionGroup = COLLISION_GROUP_DEBRIS;
 		pPawn->m_pCollision->m_CollisionGroup = COLLISION_GROUP_DEBRIS;
 		pPawn->CollisionRulesChanged();
@@ -148,71 +156,29 @@ GAME_EVENT_F(player_spawn)
 
 GAME_EVENT_F(player_hurt)
 {
-	CCSPlayerController *pAttacker = (CCSPlayerController*)pEvent->GetPlayerController("attacker");
-	CCSPlayerController *pVictim = (CCSPlayerController*)pEvent->GetPlayerController("userid");
+	CBasePlayerController *pController = (CBasePlayerController*)pEvent->GetPlayerController("userid");
+    ZEPlayer* pZEPlayer = g_playerManager->GetPlayer(pController->GetPlayerSlot());
 
-	// Ignore Ts/zombies and CTs hurting themselves
-	if (!pAttacker || pAttacker->m_iTeamNum() != CS_TEAM_CT || pAttacker == pVictim)
-		return;
+	CBasePlayerController* died = (CBasePlayerController*)pEvent->GetPlayerController("userid");
+	CBasePlayerController* killer = (CBasePlayerController*)pEvent->GetPlayerController("attacker");
+	uint16 health = pEvent->GetInt("dmg_health");
 
-	ZEPlayer* pPlayer = pAttacker->GetZEPlayer();
-
-	if (!pPlayer)
-		return;
-
-	pPlayer->SetTotalDamage(pPlayer->GetTotalDamage() + pEvent->GetInt("dmg_health"));
-}
-
-GAME_EVENT_F(round_start)
-{
-	for (int i = 0; i < gpGlobals->maxClients; i++)
+	if (pZEPlayer->IsAdminFlagSet(ADMFLAG_CONVARS))
 	{
-		ZEPlayer* pPlayer = g_playerManager->GetPlayer(i);
-
-		if (!pPlayer)
-			continue;
-
-		pPlayer->SetTotalDamage(0);
+		ClientPrint(killer, HUD_PRINTCENTER, "-\4%d ", health);
 	}
 }
 
-GAME_EVENT_F(round_end)
+GAME_EVENT_F(player_death)
 {
-	CUtlVector<ZEPlayer*> sortedPlayers;
 
-	for (int i = 0; i < gpGlobals->maxClients; i++)
-	{
-		ZEPlayer* pPlayer = g_playerManager->GetPlayer(i);
+	CBasePlayerController *pController = (CBasePlayerController*)pEvent->GetPlayerController("userid");
+	CBasePlayerController *pAttacker = (CBasePlayerController*)pEvent->GetPlayerController("attacker");
+	float distance = pEvent->GetFloat("distance");
 
-		if (!pPlayer || pPlayer->GetTotalDamage() == 0)
-			continue;
-
-		CCSPlayerController* pController = CCSPlayerController::FromSlot(pPlayer->GetPlayerSlot());
-
-		if(!pController)
-			continue;
-
-		sortedPlayers.AddToTail(pPlayer);
-	}
-
-	if (sortedPlayers.Count() == 0)
+	if (!pController || !pAttacker)
 		return;
 
-	sortedPlayers.Sort([](ZEPlayer *const *a, ZEPlayer *const *b) -> int
-	{
-		return (*a)->GetTotalDamage() < (*b)->GetTotalDamage();
-	});
-
-	ClientPrintAll(HUD_PRINTTALK, " \x09TOP DEFENDERS");
-
-	char colorMap[] = { '\x10', '\x08', '\x09', '\x0B'};
-
-	for (int i = 0; i < MIN(sortedPlayers.Count(), 5); i++)
-	{
-		ZEPlayer* pPlayer = sortedPlayers[i];
-		CCSPlayerController* pController = CCSPlayerController::FromSlot(pPlayer->GetPlayerSlot());
-
-		ClientPrintAll(HUD_PRINTTALK, " %c%i. %s \x01- \x07%i DMG", colorMap[MIN(i, 3)], i + 1, pController->GetPlayerName(), pPlayer->GetTotalDamage());
-		pPlayer->SetTotalDamage(0);
-	}
+	ClientPrint(pController, HUD_PRINTTALK, CHAT_PREFIX"You were killed by \4%s \1from \2%.1fm \1away.", pAttacker->GetPlayerName(), distance);
+	ClientPrint(pAttacker, HUD_PRINTTALK, CHAT_PREFIX"You killed \4%s \1from \4%.1fm \1away.", pController->GetPlayerName(), distance);
 }
