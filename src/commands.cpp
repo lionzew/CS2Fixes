@@ -251,31 +251,93 @@ CON_COMMAND_CHAT(rs, "reset your score")
 	ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX"You successfully reset your score.");
 }
 
-CON_COMMAND_CHAT(rcon, "send a command to server console")
+
+CON_COMMAND_CHAT(who, "get list of all admin players online")
 {
-	if (!player)
-		return;
+    if (!player)
+        return;
 
 	int iCommandPlayer = player->GetPlayerSlot();
 
-	ZEPlayer* pPlayer = g_playerManager->GetPlayer(iCommandPlayer);
+	ZEPlayer* pPlayer1 = g_playerManager->GetPlayer(iCommandPlayer);
 
-	if (!pPlayer->IsAdminFlagSet(ADMFLAG_RCON))
+
+	if (!pPlayer1->IsAdminFlagSet(ADMFLAG_CHEATS))
 	{
-		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "You don't have access to this command.");
+		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX"You don't have access to this command.");
 		return;
 	}
 
-	if (args.ArgC() < 2)
-	{
-		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "Usage: !rcon <command>");
-		return;
-	}
+    const char* pszFlagNames[] = {
+        "ADMFLAG_CUSTOM1",
+        "ADMFLAG_CUSTOM2",
+        "ADMFLAG_CUSTOM3",
+        "ADMFLAG_CUSTOM4",
+        "ADMFLAG_CUSTOM5",
+        "ADMFLAG_CUSTOM6",
+        "ADMFLAG_CUSTOM7",
+        "ADMFLAG_CUSTOM8",
+        "ADMFLAG_CHEATS"
+    };
 
-	g_pEngineServer2->ServerCommand(args.ArgS());
+    const char* pszCustomNames[] = {
+        "Helper",
+        "Administrator",
+        "Moderator",
+        "Manager",
+		"Co-Owner",
+		"Tester",
+		"Supervizor",
+		"Owner",
+    };
+
+    const int iNumFlags = sizeof(pszFlagNames) / sizeof(pszFlagNames[0]);
+
+    uint64_t uiFlagValues[] = {
+        ADMFLAG_CUSTOM1,
+        ADMFLAG_CUSTOM2,
+        ADMFLAG_CUSTOM3,
+        ADMFLAG_CUSTOM4,
+        ADMFLAG_CUSTOM5,
+        ADMFLAG_CUSTOM6,
+        ADMFLAG_CUSTOM7,
+        ADMFLAG_CUSTOM8,
+        ADMFLAG_CUSTOM9
+    };
+
+    for (int i = 1; i <= gpGlobals->maxClients; i++)
+    {
+        CBasePlayerController* cPlayer = (CBasePlayerController*)g_pEntitySystem->GetBaseEntity((CEntityIndex)i);
+        if (!cPlayer)
+            continue;
+
+        ZEPlayer* pPlayer = g_playerManager->GetPlayer(i - 1);
+        if (!pPlayer)
+            continue;
+
+        std::string sAdminFlags = "";
+        for (int j = 0; j < iNumFlags; j++)
+        {
+            if (pPlayer->IsAdminFlagSet(uiFlagValues[j]))
+            {
+                if (j < 4)
+                {
+                    sAdminFlags += pszCustomNames[j];
+                }
+                else
+                {
+                    sAdminFlags += pszFlagNames[j];
+                }
+                sAdminFlags += " ";
+            }
+        }
+
+        if (sAdminFlags.empty())
+            continue;
+
+        ClientPrint(player, HUD_PRINTCONSOLE, CHAT_PREFIX "Player %s has admin flags: %s", cPlayer->GetPlayerName(), sAdminFlags.c_str());
+    }
 }
-
-
 
 CON_COMMAND_CHAT(medic, "medic")
 {
