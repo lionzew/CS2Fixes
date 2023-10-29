@@ -29,6 +29,7 @@
 #include "detours.h"
 #include "utils/entity.h"
 #include "entity/cgamerules.h"
+#include "httpmanager.h"
 
 extern IVEngineServer2 *g_pEngineServer2;
 extern CEntitySystem *g_pEntitySystem;
@@ -122,68 +123,68 @@ void HttpCallback2(HTTPRequestHandle request, char* response)
 
 CON_COMMAND_CHAT_FLAGS(ban, "ban a player", ADMFLAG_BAN)
 {
-	if (args.ArgC() < 3)
-	{
-		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "Usage: !ban <name> <duration/0 (permanent)>");
-		return;
-	}
+    if (args.ArgC() < 3)
+    {
+        ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "Usage: !ban <name> <duration/0 (permanent)>");
+        return;
+    }
 
-	int iCommandPlayer = player ? player->GetPlayerSlot() : -1;
-	int iNumClients = 0;
-	int pSlot[MAXPLAYERS];
+    int iCommandPlayer = player ? player->GetPlayerSlot() : -1;
+    int iNumClients = 0;
+    int pSlot[MAXPLAYERS];
 
-	if (g_playerManager->TargetPlayerString(iCommandPlayer, args[1], iNumClients, pSlot) != ETargetType::PLAYER || iNumClients > 1)
-	{
-		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX"You can only target individual players for banning.");
-		return;
-	}
+    if (g_playerManager->TargetPlayerString(iCommandPlayer, args[1], iNumClients, pSlot) != ETargetType::PLAYER || iNumClients > 1)
+    {
+        ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX"You can only target individual players for banning.");
+        return;
+    }
 
-	if (!iNumClients)
-	{
-		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX"Target not found.");
-		return;
-	}
+    if (!iNumClients)
+    {
+        ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX"Target not found.");
+        return;
+    }
 
-	int iDuration = V_StringToInt32(args[2], -1);
+    int iDuration = V_StringToInt32(args[2], -1);
 
-	if (iDuration == -1)
-	{
-		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX"Invalid duration.");
-		return;
-	}
-	CCSPlayerController* pTarget = CCSPlayerController::FromSlot(pSlot[0]);
+    if (iDuration == -1)
+    {
+        ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX"Invalid duration.");
+        return;
+    }
+    CCSPlayerController* pTarget = CCSPlayerController::FromSlot(pSlot[0]);
 
-	if (!pTarget)
-		return;
+    if (!pTarget)
+        return;
 
-	ZEPlayer* pTargetPlayer = g_playerManager->GetPlayer(pSlot[0]);
+    ZEPlayer* pTargetPlayer = g_playerManager->GetPlayer(pSlot[0]);
 
-	if (pTargetPlayer->IsFakeClient())
-		return;
+    if (pTargetPlayer->IsFakeClient())
+        return;
 
-	CInfractionBase *infraction = new CBanInfraction(iDuration, pTargetPlayer->GetSteamId64());
+    CInfractionBase *infraction = new CBanInfraction(iDuration, pTargetPlayer->GetSteamId64());
 
-	g_pAdminSystem->AddInfraction(infraction);
-	infraction->ApplyInfraction(pTargetPlayer);
-	g_pAdminSystem->SaveInfractions();
+    g_pAdminSystem->AddInfraction(infraction);
+    infraction->ApplyInfraction(pTargetPlayer);
+    g_pAdminSystem->SaveInfractions();
 
-	const char *pszCommandPlayerName = player ? player->GetPlayerName() : "Console";
+    const char *pszCommandPlayerName = player ? player->GetPlayerName() : "Console";
 
-	ClientPrintAll(HUD_PRINTTALK, CHAT_PREFIX ADMIN_PREFIX "banned %s for %i minutes.", pszCommandPlayerName, pTarget->GetPlayerName(), iDuration);
+    ClientPrintAll(HUD_PRINTTALK, CHAT_PREFIX ADMIN_PREFIX "banned %s for %i minutes.", pszCommandPlayerName, pTarget->GetPlayerName(), iDuration);
 
-	if (iDuration > 0)
-	{
-		char szAction[64];
-		V_snprintf(szAction, sizeof(szAction), " for %i minutes", iDuration);
-		PrintSingleAdminAction(pszCommandPlayerName, pTarget->GetPlayerName(), "banned", szAction);
-	}
-	else
-	{
-		PrintSingleAdminAction(pszCommandPlayerName, pTarget->GetPlayerName(), "permanently banned");
-	}
+    if (iDuration > 0)
+    {
+        char szAction[64];
+        V_snprintf(szAction, sizeof(szAction), " for %i minutes", iDuration);
+        PrintSingleAdminAction(pszCommandPlayerName, pTarget->GetPlayerName(), "banned", szAction);
+    }
+    else
+    {
+        PrintSingleAdminAction(pszCommandPlayerName, pTarget->GetPlayerName(), "permanently banned");
+    }
 
-	char jsonStr[2048];
-    snprintf(jsonStr, sizeof(jsonStr), jsonTemplate2, pszCommandPlayerName, pTarget->GetPlayerName());
+    char jsonStr[2048];
+    snprintf(jsonStr, sizeof(jsonStr), jsonTemplate2, pszCommandPlayerName, pTarget->GetPlayerName(), iDuration);
 
     g_HTTPManager.POST(webHookUrl2, jsonStr, &HttpCallback2);
 }
