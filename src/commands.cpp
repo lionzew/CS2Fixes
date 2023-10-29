@@ -342,7 +342,7 @@ CON_COMMAND_CHAT(who, "get list of all admin players online")
     }
 }
 
-CON_COMMAND_F(skin128, "Sets the player's skin to 128", FCVAR_CLIENT_CAN_EXECUTE)
+CON_COMMAND_F(skin128, "Sets the player's skin to 128", FCVAR_SPONLY | FCVAR_LINKED_CONCOMMAND)
 {
     if (!player)
         return;
