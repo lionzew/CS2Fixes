@@ -210,6 +210,8 @@ void ClientPrint(CBasePlayerController *player, int hud_dest, const char *msg, .
 		ConMsg("%s\n", buf);
 }
 
+
+
 CON_COMMAND_CHAT(vipinfo, "vip info")
 {
 	if (!player)
@@ -222,6 +224,8 @@ CON_COMMAND_CHAT(vipinfo, "vip info")
 	ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX"\1Smoke color: \4 green.");
 	ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX"\1For buying VIP, join our discord: \4 discord.gg/1tap.");
 }
+
+// make a command that prints test
 
 CON_COMMAND_CHAT(vip, "vip info")
 {
@@ -284,11 +288,12 @@ CON_COMMAND_CHAT(who, "get list of all admin players online")
         "Helper",
         "Administrator",
         "Moderator",
-        "Manager",
+        "Veteran",
+		"Manager",
 		"Co-Owner",
 		"Tester",
 		"Supervizor",
-		"Owner",
+		"Owner"
     };
 
     const int iNumFlags = sizeof(pszFlagNames) / sizeof(pszFlagNames[0]);
