@@ -844,7 +844,7 @@ void CMuteInfraction::ApplyInfraction(ZEPlayer* pPlayer)
         return;
 
     // Skip applying the mute infraction if the target player is the same as the player who issued the command
-    if (pPlayer->GetSteamId64() == m_iSteamId64)
+    if (pPlayer->GetSteamId64() == m_iSteamID)
         return;
 
     pPlayer->SetMuted(true);
