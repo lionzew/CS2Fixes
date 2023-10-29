@@ -103,6 +103,9 @@ GAME_EVENT_F(player_spawn)
 		if (!pPawn || !pPawn->IsAlive())
 			return -1.0f;
 
+		int iPlayer = pController->GetPlayerSlot();
+		ZEPlayer* pZEPlayer = g_playerManager->GetPlayer(iPlayer);
+
 		if(!pZEPlayer)
 		return;
 
