@@ -107,7 +107,7 @@ public:
 	{
 		V_memset(m_vecPlayers, 0, sizeof(m_vecPlayers));
 		m_nUsingStopSound = 0;
-		m_nUsingSilenceSound = -1; // On by default
+		m_nUsingSilenceSound = 0; // On by default
 		m_nUsingStopDecals = -1; // On by default
 
 		if (late)
