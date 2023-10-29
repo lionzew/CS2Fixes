@@ -35,6 +35,7 @@
 #include "playermanager.h"
 #include "igameevents.h"
 #include "gameconfig.h"
+#include "httpmanager.h"
 
 #define VPROF_ENABLED
 #include "tier0/vprof.h"
