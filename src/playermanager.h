@@ -49,6 +49,7 @@ public:
 		m_iHideDistance = 0;
 		m_bConnected = false;
 		m_iTotalDamage = 0;
+		m_bUsedMedkit = false;
 	}
 
 	bool IsFakeClient() { return m_bFakeClient; }
@@ -81,7 +82,11 @@ public:
 	void CheckAdmin();
 	void CheckInfractions();
 
+	bool WasUsingMedkit() { return m_bUsedMedkit; }
+	void SetUsedMedkit(bool used) { m_bUsedMedkit = used; }
+
 private:
+	bool m_bUsedMedkit;
 	bool m_bAuthenticated;
 	bool m_bConnected;
 	const CSteamID* m_SteamID;

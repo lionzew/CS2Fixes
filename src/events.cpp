@@ -114,6 +114,14 @@ GAME_EVENT_F(player_spawn)
 	if (!pController)
 		return;
 
+	int iPlayer = pController->GetPlayerSlot();
+		ZEPlayer* pZEPlayer = g_playerManager->GetPlayer(iPlayer);
+
+	if (pZEPlayer)
+		{
+			pZEPlayer->SetUsedMedkit(false);
+		}
+
 	CHandle<CCSPlayerController> hController = pController->GetHandle();
 
 	// Gotta do this on the next frame...
