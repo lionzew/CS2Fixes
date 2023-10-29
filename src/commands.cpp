@@ -402,23 +402,6 @@ CON_COMMAND_CHAT(medic, "medic")
 	ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX"Medkit used! Your health is now \4%d", health);
 }
 
-CON_COMMAND_CHAT(dlore, "dlore")
-{
-	if (!player)
-		return;
-
-	int iPlayer = player->GetPlayerSlot();
-
-
-	ZEPlayer* pZEPlayer = g_playerManager->GetPlayer(iPlayer);
-
-    char command[64];
-    sprintf(command, "skin 1228");
-	g_pEngineServer2->ClientCommand(iPlayer, command);
-
-    // Execute the command in the player's console
-
-}
 
 // Lookup a weapon classname in the weapon map and "initialize" it.
 // Both m_bInitialized and m_iItemDefinitionIndex need to be set for a weapon to be pickable and not crash clients,
