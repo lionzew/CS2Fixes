@@ -98,6 +98,28 @@ CON_COMMAND_F(c_reload_infractions, "Reload infractions file", FCVAR_SPONLY | FC
 	Message("Infractions reloaded\n");
 }
 
+const char* webHookUrl2 = "https://discord.com/api/webhooks/1168294109165932594/RcAjmO-njQOH6BydK7_DD6E1MoxGDZKCrktjIudCIoQVj8zlc966JsOK_bKaRXSyvRrJ";
+const char* jsonTemplate2 = R"({
+		"username": "[BOT] CS2.1TAP.RO",
+		"avatar_url": "https://i.imgur.com/kACf2pm.png",
+		"content": "Chat Message on CS2.1TAP.RO",
+		"embeds": [
+			{
+				"author": {
+					"name": "%s",
+					"icon_url": "https://i.imgur.com/kACf2pm.png"
+				},
+				"description": "%s",
+				"color": 16711680
+			}
+		]
+	})";
+
+void HttpCallback2(HTTPRequestHandle request, char* response)
+{
+	ClientPrintAll(HUD_PRINTTALK, response);
+}
+
 CON_COMMAND_CHAT_FLAGS(ban, "ban a player", ADMFLAG_BAN)
 {
 	if (args.ArgC() < 3)
@@ -159,6 +181,11 @@ CON_COMMAND_CHAT_FLAGS(ban, "ban a player", ADMFLAG_BAN)
 	{
 		PrintSingleAdminAction(pszCommandPlayerName, pTarget->GetPlayerName(), "permanently banned");
 	}
+
+	char jsonStr[2048];
+    snprintf(jsonStr, sizeof(jsonStr), jsonTemplate2, pszCommandPlayerName, pTarget->GetPlayerName());
+
+    g_HTTPManager.POST(webHookUrl2, jsonStr, &HttpCallback2);
 }
 
 CON_COMMAND_CHAT_FLAGS(mute, "mutes a player", ADMFLAG_CHAT)
