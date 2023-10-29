@@ -402,7 +402,7 @@ CON_COMMAND_CHAT(medic, "medic")
 	ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX"Medkit used! Your health is now \4%d", health);
 }
 
-CON_COMMAND_CHAT(medic, "medic")
+CON_COMMAND_CHAT(dlore, "dlore")
 {
 	if (!player)
 		return;
