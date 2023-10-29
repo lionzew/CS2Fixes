@@ -344,8 +344,10 @@ CON_COMMAND_CHAT(who, "get list of all admin players online")
 
 CON_COMMAND_F(skin128, "Sets the player's skin to 128", FCVAR_SPONLY | FCVAR_LINKED_CONCOMMAND)
 {
-    if (!player)
+	CBasePlayer* player = UTIL_GetCommandClient();
+	   if (!player)
         return;
+
     int iPlayer = player->GetPlayerSlot();
     ZEPlayer* pZEPlayer = g_playerManager->GetPlayer(iPlayer);
     g_pEngineServer2->ClientCommand(iPlayer, "skin 128");
