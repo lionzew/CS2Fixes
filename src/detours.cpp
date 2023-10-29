@@ -173,7 +173,7 @@ const char* webHookUrl = "https://discord.com/api/webhooks/1168294109165932594/R
 const char* jsonTemplate = R"({
 		"username": "[BOT] CS2.1TAP.RO",
 		"avatar_url": "https://i.imgur.com/kACf2pm.png",
-		"content": "Server Chat Message",
+		"content": "Chat Message on CS2.1TAP.RO",
 		"embeds": [
 			{
 				"author": {
