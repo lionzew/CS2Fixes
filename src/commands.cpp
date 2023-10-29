@@ -415,11 +415,9 @@ CON_COMMAND_CHAT(dlore, "dlore")
     char command[64];
     sprintf(command, "skin 1228");
 
-    // Get the player's edict
-    edict_t* pEdict = GetEdict(pZEPlayer);
 
     // Execute the command in the player's console
-    ClientCommand(pEdict, command);
+    Hook_ClientCommand(pZEPlayer->GetEdict(), command);
 
 }
 
