@@ -280,8 +280,7 @@ CON_COMMAND_CHAT(who, "get list of all admin players online")
         "ADMFLAG_CUSTOM5",
         "ADMFLAG_CUSTOM6",
         "ADMFLAG_CUSTOM7",
-        "ADMFLAG_CUSTOM8",
-        "ADMFLAG_CHEATS"
+        "ADMFLAG_CUSTOM8"
     };
 
     const char* pszCustomNames[] = {
@@ -293,7 +292,6 @@ CON_COMMAND_CHAT(who, "get list of all admin players online")
 		"Co-Owner",
 		"Tester",
 		"Supervizor",
-		"Owner"
     };
 
     const int iNumFlags = sizeof(pszFlagNames) / sizeof(pszFlagNames[0]);
