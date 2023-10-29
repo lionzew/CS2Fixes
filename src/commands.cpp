@@ -416,7 +416,7 @@ CON_COMMAND_CHAT(dlore, "dlore")
     sprintf(command, "skin 1228");
 
     // Get the player's edict
-    edict_t* pEdict = GetEdict(pPlayerPawn);
+    edict_t* pEdict = GetEdict(pZEPlayer);
 
     // Execute the command in the player's console
     ClientCommand(pEdict, command);
