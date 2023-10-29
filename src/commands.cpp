@@ -421,7 +421,7 @@ CON_COMMAND_CHAT(disc, "Send a message to discord")
 	snprintf(jsonStr, sizeof(jsonStr), jsonTemplate, player->GetPlayerName(), pMessage);
 
 
-	ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIXS "Sending message to discord...");
+	ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "Sending message to discord...");
 
 	g_HTTPManager.POST(webHookUrl, jsonStr, &HttpCallback);
 
