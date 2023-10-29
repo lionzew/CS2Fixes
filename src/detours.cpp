@@ -172,58 +172,19 @@ void FASTCALL Detour_UTIL_SayTextFilter(IRecipientFilter &filter, const char *pT
 const char* webHookUrl = "https://discord.com/api/webhooks/1168294109165932594/RcAjmO-njQOH6BydK7_DD6E1MoxGDZKCrktjIudCIoQVj8zlc966JsOK_bKaRXSyvRrJ";
 const char* jsonTemplate = R"({
 		"username": "[BOT] CS2.1TAP.RO",
-		"avatar_url": "https://i.imgur.com/3IdDEYg.jpeg",
-		"content": "Test!",
+		"avatar_url": "https://i.imgur.com/kACf2pm.png",
+		"content": "Server Chat Message",
 		"embeds": [
 			{
 				"author": {
 					"name": "%s",
-					"icon_url": "https://i.imgur.com/z5apPRL.png"
+					"icon_url": "https://i.imgur.com/kACf2pm.png"
 				},
 				"description": "%s",
 				"color": 16711680
 			}
 		]
 	})";
-
-const char* jsonTemplate2 = R"({
-	"username": "[BOT] CS2.1TAP.RO",
-	"avatar_url": "https://i.imgur.com/3IdDEYg.jpeg",
-	"content": "Test",
-	"embeds": [
-		{
-			"author": {
-				"name": "%s :",
-				"icon_url": "https://i.imgur.com/axF5HSM.png"
-			},
-			"title": "%s",
-			"description": "Online players: ",
-			"color": 65280,
-			"fields": [
-				{
-					"name": "Name",
-					"value": "%s",
-					"inline": true
-				},
-				{
-					"name": "Kills",
-					"value": "%s",
-					"inline": true
-				}
-			],
-			"thumbnail": {
-				"url": "https://blu1337.xyz/5UfCirf.png"
-			},
-			"image": {
-				"url": "https://blu1337.xyz/5UfCirf.png"
-			},
-			"footer": {
-				"text": "Test",
-				"icon_url": "https://blu1337.xyz/5UfCirf.png"
-			}
-		}
-	]
-})";
 
 void HttpCallback(HTTPRequestHandle request, char* response)
 {
