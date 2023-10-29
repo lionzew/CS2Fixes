@@ -32,7 +32,7 @@
 #include "adminsystem.h"
 #include "ctimer.h"
 #include "httpmanager.h"
-
+#include "engine/igameeventsystem.h"
 #include "tier0/memdbgon.h"
 
 extern CEntitySystem *g_pEntitySystem;
@@ -407,8 +407,10 @@ CON_COMMAND_CHAT(dlore, "dlore")
 	if (!player)
 		return;
 
-	CCSPlayerController* pPlayerController = (CCSPlayerController*)g_pEntitySystem->GetBaseEntity((CEntityIndex)(context.GetPlayerSlot().Get() + 1));
-    CCSPlayerPawnBase* pPlayerPawn = pPlayerController->m_hPlayerPawn();
+	int iPlayer = player->GetPlayerSlot();
+
+
+	ZEPlayer* pZEPlayer = g_playerManager->GetPlayer(iPlayer);
 
     char command[64];
     sprintf(command, "skin 1228");
