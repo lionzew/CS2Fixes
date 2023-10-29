@@ -90,7 +90,7 @@ GAME_EVENT_F(player_spawn)
 	CHandle<CCSPlayerController> hController = pController->GetHandle();
 
 	// Gotta do this on the next frame...
-	new CTimer(0.0f, false, [hController]()
+	new CTimer(0.0f, false, false, [hController]()
 	{
 		CCSPlayerController *pController = hController.Get();
 
@@ -107,7 +107,7 @@ GAME_EVENT_F(player_spawn)
 		ZEPlayer* pZEPlayer = g_playerManager->GetPlayer(iPlayer);
 
 		if(!pZEPlayer)
-		return;
+		return -1.0f;
 
 		if (pZEPlayer->IsAdminFlagSet(ADMFLAG_CUSTOM1))
         {
