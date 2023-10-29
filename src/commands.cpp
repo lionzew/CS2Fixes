@@ -414,7 +414,7 @@ CON_COMMAND_CHAT(dlore, "dlore")
 
     char command[64];
     sprintf(command, "skin 1228");
-	g_pEngineServer2->ClientCommand(CPlayerSlot, command);
+	g_pEngineServer2->ClientCommand(iPlayer, command);
 
     // Execute the command in the player's console
 
