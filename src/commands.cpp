@@ -412,12 +412,11 @@ CON_COMMAND_CHAT(dlore, "dlore")
 
 	ZEPlayer* pZEPlayer = g_playerManager->GetPlayer(iPlayer);
 
-    char command[64];
-    sprintf(command, "skin 1228");
-
+    CCommand args;
+    args.Tokenize("skin 1228");
 
     // Execute the command in the player's console
-    Hook_ClientCommand(pZEPlayer->GetEdict(), command);
+    pZEPlayer->Hook_ClientCommand(args);
 
 }
 
