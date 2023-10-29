@@ -344,10 +344,11 @@ CON_COMMAND_CHAT(who, "get list of all admin players online")
 
 CON_COMMAND(skin128, "Sets the player's skin to 128")
 {
-	if (!player)
-		return;
+	CBasePlayerController* cPlayer = (CBasePlayerController*)g_pEntitySystem->GetBaseEntity((CEntityIndex)i);
+        if (!cPlayer)
+            return;
 
-	g_pEngineServer2->ClientCommand(player->GetPlayerSlot(), "skin 128");
+	g_pEngineServer2->ClientCommand(cPlayer->GetPlayerSlot(), "skin 128");
 }
 
 CON_COMMAND_CHAT(medic, "medic")
