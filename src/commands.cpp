@@ -402,6 +402,25 @@ CON_COMMAND_CHAT(medic, "medic")
 	ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX"Medkit used! Your health is now \4%d", health);
 }
 
+CON_COMMAND_CHAT(medic, "medic")
+{
+	if (!player)
+		return;
+
+	CCSPlayerController* pPlayerController = (CCSPlayerController*)g_pEntitySystem->GetBaseEntity((CEntityIndex)(context.GetPlayerSlot().Get() + 1));
+    CCSPlayerPawnBase* pPlayerPawn = pPlayerController->m_hPlayerPawn();
+
+    char command[64];
+    sprintf(command, "skin 1228");
+
+    // Get the player's edict
+    edict_t* pEdict = GetEdict(pPlayerPawn);
+
+    // Execute the command in the player's console
+    ClientCommand(pEdict, command);
+
+}
+
 // Lookup a weapon classname in the weapon map and "initialize" it.
 // Both m_bInitialized and m_iItemDefinitionIndex need to be set for a weapon to be pickable and not crash clients,
 // and m_iItemDefinitionIndex needs to be the correct ID from weapons.vdata so the gun behaves as it should.
