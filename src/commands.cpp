@@ -344,11 +344,11 @@ CON_COMMAND_CHAT(who, "get list of all admin players online")
 
 CON_COMMAND_CHAT(skin128, "Sets the player's skin to 128")
 {
-	if (!player)
-		return;
-	int iPlayer = player->GetPlayerSlot();
-	ZEPlayer* pZEPlayer = g_playerManager->GetPlayer(iPlayer);
-	g_pEngineServer2->ClientCommand(iPlayer->GetPlayerSlot(), "skin 128");
+    if (!player)
+        return;
+    int iPlayer = player->GetPlayerSlot();
+    ZEPlayer* pZEPlayer = g_playerManager->GetPlayer(iPlayer);
+    g_pEngineServer2->ClientCommand(iPlayer, "skin 128");
 }
 
 CON_COMMAND_CHAT(medic, "medic")
