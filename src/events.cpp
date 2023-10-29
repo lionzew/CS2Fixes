@@ -90,7 +90,7 @@ GAME_EVENT_F(player_spawn)
 	CHandle<CCSPlayerController> hController = pController->GetHandle();
 
 	// Gotta do this on the next frame...
-	new CTimer(0.0f, false, false, [hController]()
+	new CTimer(0.0f, false, [hController]()
 	{
 		CCSPlayerController *pController = hController.Get();
 
