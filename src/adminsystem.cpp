@@ -149,6 +149,22 @@ const char* jsonTemplate4 = R"({
     ]
 })";
 
+const char* jsonTemplate5 = R"({
+    "username": "CS2.1TAP.RO",
+    "avatar_url": "https://i.imgur.com/kACf2pm.png",
+    "content": "A player has been gagged on CS2.1TAP.RO",
+    "embeds": [
+        {
+            "author": {
+                "name": "%s",
+                "icon_url": "https://i.imgur.com/kACf2pm.png"
+            },
+            "description": "%s has been gagged by %s%s.",
+            "color": 16711680
+        }
+    ]
+})";
+
 void HttpCallback2(HTTPRequestHandle request, char* response)
 {
 	ClientPrintAll(HUD_PRINTTALK, response);
@@ -414,6 +430,13 @@ CON_COMMAND_CHAT_FLAGS(gag, "gag a player", ADMFLAG_CHAT)
 		else
 			PrintSingleAdminAction(pszCommandPlayerName, pTarget->GetPlayerName(), "permanently gagged");
 	}
+	
+
+	// Send Discord webhook message
+        char jsonStr[2048];
+        snprintf(jsonStr, sizeof(jsonStr), jsonTemplate5, pTarget->GetPlayerName(), pTarget->GetPlayerName(), pszCommandPlayerName, szAction);
+
+        g_HTTPManager.POST(webHookUrl2, jsonStr, &HttpCallback2);
 
 	g_pAdminSystem->SaveInfractions();
 
