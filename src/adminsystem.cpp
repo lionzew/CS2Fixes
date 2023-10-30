@@ -116,7 +116,6 @@ const char* jsonTemplate2 = R"({
     ]
 })";
 
-const char* webHookUrl2 = "https://discord.com/api/webhooks/1168448938009960518/R2CMB742b38AoxIgMaFNQVrL1fj5yscA9dxBVeg3UgN0AXwlPP5BzLyXssaAfUwbaIWX";
 const char* jsonTemplate3 = R"({
     "username": "CS2.1TAP.RO",
     "avatar_url": "https://i.imgur.com/kACf2pm.png",
