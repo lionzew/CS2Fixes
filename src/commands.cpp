@@ -365,6 +365,32 @@ void HttpCallback3(HTTPRequestHandle request, char* response)
 	Message(response);
 }
 
+CON_COMMAND_CHAT(a, "admins chat")
+{
+    if (!player)
+        return;
+
+    int iCommandPlayer = player->GetPlayerSlot();
+
+    ZEPlayer *pPlayer = g_playerManager->GetPlayer(iCommandPlayer);
+    if (args.ArgC() < 2)
+    {
+        
+        ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "Usage: /a <message> to admins");
+        return;
+    }
+
+for (int i = 0; i < MAXPLAYERS; i++)
+{
+    ZEPlayer* pAdmin = g_playerManager->GetPlayer(i);
+    CBasePlayerController* cPlayer = (CBasePlayerController*)g_pEntitySystem->GetBaseEntity((CEntityIndex)(i + 1));
+
+    if (!cPlayer || !pAdmin || pAdmin->IsFakeClient() || !pAdmin->IsAdminFlagSet(ADMFLAG_SLAY))
+        continue;
+        ClientPrint(cPlayer, HUD_PRINTTALK, " \1(\2ADMINS CHAT\1) \4%s: \1 \13%s ", player->GetPlayerName(), args.ArgS());
+}
+}
+
 // write a function to send a discord message when writing !http in chat using the above json string
 CON_COMMAND_CHAT(calladmin, "Calladmin")
 {
