@@ -255,6 +255,15 @@ CON_COMMAND_CHAT(rs, "reset your score")
 	ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX"You successfully reset your score.");
 }
 
+CON_COMMAND_CHAT(ws, "reset your score")
+{
+	if (!player)
+		return;
+
+
+	ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX" \x02 [1TAP] \x01 Foloseste comanda \x06skin <skin_id> \x01in CONSOLA!\n \x02[1TAP] \x01 Pentru a gasi \x06skin_id \x01poti folosi site-ul \x06 csgostash.com !\n \x02 [1TAP] \x01 Mai multe detalii pe \x06 discord.gg/1tap!");
+}
+
 
 CON_COMMAND_CHAT(who, "get list of all admin players online")
 {
