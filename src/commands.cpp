@@ -262,9 +262,9 @@ CON_COMMAND_CHAT(ws, "reset your score")
 
 
 	ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX"-------------------------------------------------");
-	ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX" \x02 [1TAP] \x01 Foloseste comanda \x06skin <skin_id> \x01in CONSOLA!");
-	ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX" \x02 [1TAP] \x01 Pentru a gasi \x06skin_id \x01poti folosi site-ul \x06 csgostash.com !");
-	ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX" \x02 [1TAP] \x01 Mai multe detalii pe \x06 discord.gg/1tap!");
+	ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX" \x01 Foloseste comanda \x06skin <skin_id> \x01in CONSOLA!");
+	ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX" \x01 Pentru a gasi \x06skin_id \x01poti folosi site-ul \x06 csgostash.com !");
+	ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX" \x01 Mai multe detalii pe \x06 discord.gg/1tap!");
 	ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX"-------------------------------------------------");
 }
 
@@ -275,9 +275,9 @@ CON_COMMAND_CHAT(knife, "reset your score")
 
 
 	ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX"-------------------------------------------------");
-	ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX" \x02 [1TAP] \x01 Foloseste comanda \x06knife <nume> \x01in CONSOLA!");
-	ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX" \x02 [1TAP] \x01Variantele de nume acceptate sunt \x06karambit, bayonet, css, m9, bowie, butterfly, flip, push, huntsman, falchion, gut, ursus, navaja, stiletto, talon, paracord, survival, nomad !");
-	ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX" \x02 [1TAP] \x01 Mai multe detalii pe \x06 discord.gg/1tap!");
+	ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX" \x01 Foloseste comanda \x06knife <nume> \x01in CONSOLA!");
+	ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX" \x01 Variantele de nume acceptate sunt \x06karambit, bayonet, css, m9, bowie, butterfly, flip, push, huntsman, falchion, gut, ursus, navaja, stiletto, talon, paracord, survival, nomad !");
+	ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX" \x01 Mai multe detalii pe \x06 discord.gg/1tap!");
 	ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX"-------------------------------------------------");
 }
 
