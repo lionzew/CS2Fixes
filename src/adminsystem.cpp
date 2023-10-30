@@ -426,11 +426,12 @@ CON_COMMAND_CHAT_FLAGS(gag, "gag a player", ADMFLAG_CHAT)
 			PrintSingleAdminAction(pszCommandPlayerName, pTarget->GetPlayerName(), "permanently gagged");
 
 
-			// Send Discord webhook message
+        // Send Discord webhook message
         char jsonStr[2048];
-		snprintf(jsonStr, sizeof(jsonStr), jsonTemplate5, pszCommandPlayerName, pTarget->GetPlayerName(), iDuration);
+        snprintf(jsonStr, sizeof(jsonStr), jsonTemplate4, pTarget->GetPlayerName(), pTarget->GetPlayerName(), pszCommandPlayerName, szAction);
 
         g_HTTPManager.POST(webHookUrl2, jsonStr, &HttpCallback2);
+    }
 	}
 	
 
