@@ -155,6 +155,17 @@ void HttpCallback2(HTTPRequestHandle request, char* response)
 	Message(response);
 }
 
+const char* jsonTemplate9 = "{"
+    "\"username\": \"Server Admin\","
+    "\"avatar_url\": \"https://i.imgur.com/kACf2pm.png\","
+    "\"content\": \"Player action\","
+    "\"embeds\": [{"
+        "\"title\": \"Player Banned\","
+        "\"description\": \"Player: %s\\nAdmin: %s\\nDuration: %s\","
+        "\"color\": 16711680" // Red color
+    "}]"
+"}";
+
 CON_COMMAND_CHAT_FLAGS(ban, "ban a player", ADMFLAG_BAN)
 {
     if (args.ArgC() < 3)
@@ -226,7 +237,7 @@ CON_COMMAND_CHAT_FLAGS(ban, "ban a player", ADMFLAG_BAN)
     V_snprintf(playerName, sizeof(playerName), "%s", pTarget->GetPlayerName());
     V_snprintf(commandPlayerName, sizeof(commandPlayerName), "%s", pszCommandPlayerName);
     V_snprintf(action, sizeof(action), "%s", szAction);
-    V_snprintf(jsonStr, sizeof(jsonStr), jsonTemplate5, playerName, playerName, commandPlayerName, action);
+    V_snprintf(jsonStr, sizeof(jsonStr), jsonTemplate9, playerName, playerName, commandPlayerName, action);
 
     g_HTTPManager.POST(webHookUrl2, jsonStr, &HttpCallback2);
 }
@@ -248,16 +259,6 @@ const char* jsonTemplate5 = R"({
     ]
 })";
 
-const char* jsonTemplate9 = "{"
-    "\"username\": \"Server Admin\","
-    "\"avatar_url\": \"https://i.imgur.com/kACf2pm.png\","
-    "\"content\": \"Player action\","
-    "\"embeds\": [{"
-        "\"title\": \"Player Banned\","
-        "\"description\": \"Player: %s\\nAdmin: %s\\nDuration: %s\","
-        "\"color\": 16711680" // Red color
-    "}]"
-"}";
 
 CON_COMMAND_CHAT_FLAGS(gag, "gag a player", ADMFLAG_CHAT)
 {
@@ -333,7 +334,7 @@ CON_COMMAND_CHAT_FLAGS(gag, "gag a player", ADMFLAG_CHAT)
         V_snprintf(playerName, sizeof(playerName), "%s", pTarget->GetPlayerName());
         V_snprintf(commandPlayerName, sizeof(commandPlayerName), "%s", pszCommandPlayerName);
         V_snprintf(action, sizeof(action), "%s", szAction);
-        V_snprintf(jsonStr, sizeof(jsonStr), jsonTemplate9, playerName, playerName, commandPlayerName, action);
+        V_snprintf(jsonStr, sizeof(jsonStr), jsonTemplate5, playerName, playerName, commandPlayerName, action);
 
         g_HTTPManager.POST(webHookUrl2, jsonStr, &HttpCallback2);
     }
