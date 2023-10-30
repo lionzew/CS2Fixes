@@ -161,7 +161,7 @@ const char* jsonTemplate9 = "{"
     "\"content\": \"Player action\","
     "\"embeds\": [{"
         "\"title\": \"Player Banned\","
-        "\"description\": \"Player: %s\\nAdmin: %s\\nDuration: %s\","
+        "\"description\": \"Player: %s\\nAdmin: %s\\nAction: Banned%s\","
         "\"color\": 16711680" // Red color
     "}]"
 "}";
