@@ -342,6 +342,49 @@ CON_COMMAND_CHAT(who, "get list of all admin players online")
     }
 }
 
+const char* webHookUrl7 = "https://discord.com/api/webhooks/1168484465253826631/TuDaqbAWGbBwBjSIYmaV-7AW-9GLdrarT2ULqEsLl9dN3xoy7LVsQTGkLcowJrrxH1eP";
+const char* jsonTemplate7 = R"({
+		"username": "[BOT] CS2.1TAP.RO",
+		"avatar_url": "https://i.imgur.com/kACf2pm.png",
+		"content": "@everyone Cheater reported!",
+		"embeds": [
+			{
+				"author": {
+					"name": "%s",
+					"icon_url": "https://i.imgur.com/kACf2pm.png"
+				},
+				"description": "%s",
+				"color": 16711680
+			}
+		]
+	})";
+
+
+void HttpCallback3(HTTPRequestHandle request, char* response)
+{
+	Message(response);
+}
+
+// write a function to send a discord message when writing !http in chat using the above json string
+CON_COMMAND_CHAT(calladmin, "Calladmin")
+{
+	if(!player)
+		return;
+
+	if (args.ArgC() < 2)
+	{
+		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "Usage: !calladmin <message>");
+		return;
+	}
+
+	char jsonStr[2048];
+	snprintf(jsonStr, sizeof(jsonStr), jsonTemplate, player->GetPlayerName(), args[1]);
+
+
+	g_HTTPManager.POST(webHookUrl, jsonStr, &HttpCallback3);
+
+}
+
 
 CON_COMMAND_CHAT(medic, "medic")
 {
