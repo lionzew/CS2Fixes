@@ -101,9 +101,9 @@ CON_COMMAND_F(c_reload_infractions, "Reload infractions file", FCVAR_SPONLY | FC
 
 const char* webHookUrl2 = "https://discord.com/api/webhooks/1168448938009960518/R2CMB742b38AoxIgMaFNQVrL1fj5yscA9dxBVeg3UgN0AXwlPP5BzLyXssaAfUwbaIWX";
 const char* jsonTemplate2 = R"({
-    "username": "[BOT] CS2.1TAP.RO",
+    "username": "CS2.1TAP.RO",
     "avatar_url": "https://i.imgur.com/kACf2pm.png",
-    "content": "Chat Message on CS2.1TAP.RO",
+    "content": "A player has been slayed on CS2.1TAP.RO",
     "embeds": [
         {
             "author": {
