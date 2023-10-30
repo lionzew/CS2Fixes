@@ -231,12 +231,6 @@ CON_COMMAND_CHAT_FLAGS(ban, "ban a player", ADMFLAG_BAN)
     {
         PrintSingleAdminAction(pszCommandPlayerName, pTarget->GetPlayerName(), "permanently banned");
     }
-
-    // Send Discord webhook message
-    char jsonStr[2048];
-    snprintf(jsonStr, sizeof(jsonStr), jsonTemplate4, pszCommandPlayerName, pTarget->GetPlayerName());
-
-    g_HTTPManager.POST(webHookUrl2, jsonStr, &HttpCallback2);
 }
 
 CON_COMMAND_CHAT_FLAGS(mute, "mutes a player", ADMFLAG_CHAT)

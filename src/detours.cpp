@@ -188,7 +188,7 @@ const char* jsonTemplate = R"({
 
 void HttpCallback(HTTPRequestHandle request, char* response)
 {
-	ClientPrintAll(HUD_PRINTTALK, response);
+	Message(response);
 }
 
 void FASTCALL Detour_UTIL_SayText2Filter(
