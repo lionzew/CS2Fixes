@@ -299,7 +299,7 @@ CON_COMMAND_CHAT_FLAGS(mute, "mutes a player", ADMFLAG_CHAT)
 
         // Send Discord webhook message
         char jsonStr[2048];
-        snprintf(jsonStr, sizeof(jsonStr), jsonTemplate4, pTarget->GetPlayerName(), pTarget->GetPlayerName(), pszCommandPlayerName, szAction);
+        snprintf(jsonStr, sizeof(jsonStr), jsonTemplate3, pTarget->GetPlayerName(), pTarget->GetPlayerName(), pszCommandPlayerName, szAction);
 
         g_HTTPManager.POST(webHookUrl2, jsonStr, &HttpCallback2);
     }
