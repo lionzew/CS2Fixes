@@ -143,7 +143,7 @@ const char* jsonTemplate4 = R"({
                 "name": "%s",
                 "icon_url": "https://i.imgur.com/kACf2pm.png"
             },
-            "description": "%s has been banned by %s.",
+            "description": "%s has been banned by %s%d.",
             "color": 16711680
         }
     ]
@@ -433,7 +433,7 @@ CON_COMMAND_CHAT_FLAGS(gag, "gag a player", ADMFLAG_CHAT)
 
 			// Send Discord webhook message
         char jsonStr[2048];
-        snprintf(jsonStr, sizeof(jsonStr), jsonTemplate5, pTarget->GetPlayerName(), pTarget->GetPlayerName(), pszCommandPlayerName, szAction);
+		snprintf(jsonStr, sizeof(jsonStr), jsonTemplate5, pszCommandPlayerName, pTarget->GetPlayerName(), iDuration);
 
         g_HTTPManager.POST(webHookUrl2, jsonStr, &HttpCallback2);
 	}
