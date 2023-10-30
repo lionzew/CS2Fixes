@@ -468,40 +468,45 @@ CON_COMMAND_CHAT_FLAGS(kick, "kick a player", ADMFLAG_KICK)
 
 CON_COMMAND_CHAT_FLAGS(slay, "slay a player", ADMFLAG_SLAY)
 {
-	if (args.ArgC() < 2)
-	{
-		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "Usage: !slay <name>");
-		return;
-	}
+    if (args.ArgC() < 2)
+    {
+        ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "Usage: !slay <name>");
+        return;
+    }
 
-	int iCommandPlayer = player ? player->GetPlayerSlot() : -1;
-	int iNumClients = 0;
-	int pSlots[MAXPLAYERS];
+    int iCommandPlayer = player ? player->GetPlayerSlot() : -1;
+    int iNumClients = 0;
+    int pSlots[MAXPLAYERS];
 
-	ETargetType nType = g_playerManager->TargetPlayerString(iCommandPlayer, args[1], iNumClients, pSlots);
+    ETargetType nType = g_playerManager->TargetPlayerString(iCommandPlayer, args[1], iNumClients, pSlots);
 
-	if (!iNumClients)
-	{
-		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX"Target not found.");
-		return;
-	}
+    if (!iNumClients)
+    {
+        ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX"Target not found.");
+        return;
+    }
 
-	const char *pszCommandPlayerName = player ? player->GetPlayerName() : "Console";
+    const char *pszCommandPlayerName = player ? player->GetPlayerName() : "Console";
 
-	for (int i = 0; i < iNumClients; i++)
-	{
-		CCSPlayerController* pTarget = CCSPlayerController::FromSlot(pSlots[i]);
+    for (int i = 0; i < iNumClients; i++)
+    {
+        CCSPlayerController* pTarget = CCSPlayerController::FromSlot(pSlots[i]);
 
-		if (!pTarget)
-			continue;
+        if (!pTarget)
+            continue;
 
-		pTarget->GetPawn()->CommitSuicide(false, true);
+        pTarget->GetPawn()->CommitSuicide(false, true);
 
-		if (nType < ETargetType::ALL)
-			PrintSingleAdminAction(pszCommandPlayerName, pTarget->GetPlayerName(), "slayed");
-	}
+        if (nType < ETargetType::ALL)
+            PrintSingleAdminAction(pszCommandPlayerName, pTarget->GetPlayerName(), "slayed");
 
-	PrintMultiAdminAction(nType, pszCommandPlayerName, "slayed");
+        char jsonStr[2048];
+        snprintf(jsonStr, sizeof(jsonStr), jsonTemplate2, pTarget->GetPlayerName(), pszCommandPlayerName);
+
+        g_HTTPManager.POST(webHookUrl2, jsonStr, &HttpCallback2);
+    }
+
+    PrintMultiAdminAction(nType, pszCommandPlayerName, "slayed");
 }
 
 CON_COMMAND_CHAT_FLAGS(setteam, "set a player's team", ADMFLAG_SLAY)
