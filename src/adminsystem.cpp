@@ -433,9 +433,15 @@ CON_COMMAND_CHAT_FLAGS(gag, "gag a player", ADMFLAG_CHAT)
 
 			// Send Discord webhook message
         char jsonStr[2048];
-        snprintf(jsonStr, sizeof(jsonStr), jsonTemplate5, pTarget->GetPlayerName(), pTarget->GetPlayerName(), pszCommandPlayerName, szAction);
+int result = snprintf(jsonStr, sizeof(jsonStr), jsonTemplate5, pTarget->GetPlayerName(), pTarget->GetPlayerName(), pszCommandPlayerName, szAction);
 
-        g_HTTPManager.POST(webHookUrl2, jsonStr, &HttpCallback2);
+if (result < 0 || result >= sizeof(jsonStr))
+{
+    // Error: formatted string was truncated or there was an error in the formatting
+    return;
+}
+
+g_HTTPManager.POST(webHookUrl2, jsonStr, &HttpCallback2);
 	}
 	
 
