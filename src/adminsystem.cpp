@@ -132,6 +132,38 @@ const char* jsonTemplate3 = R"({
     ]
 })";
 
+const char* jsonTemplate3 = R"({
+    "username": "CS2.1TAP.RO",
+    "avatar_url": "https://i.imgur.com/kACf2pm.png",
+    "content": "A player has been muted on CS2.1TAP.RO",
+    "embeds": [
+        {
+            "author": {
+                "name": "%s",
+                "icon_url": "https://i.imgur.com/kACf2pm.png"
+            },
+            "description": "%s has been muted by %s%s.",
+            "color": 16711680
+        }
+    ]
+})";
+
+const char* jsonTemplate4 = R"({
+    "username": "CS2.1TAP.RO",
+    "avatar_url": "https://i.imgur.com/kACf2pm.png",
+    "content": "A player has been banned on CS2.1TAP.RO",
+    "embeds": [
+        {
+            "author": {
+                "name": "%s",
+                "icon_url": "https://i.imgur.com/kACf2pm.png"
+            },
+            "description": "%s has been banned by %s%s.",
+            "color": 16711680
+        }
+    ]
+})";
+
 void HttpCallback2(HTTPRequestHandle request, char* response)
 {
 	ClientPrintAll(HUD_PRINTTALK, response);
@@ -186,7 +218,7 @@ CON_COMMAND_CHAT_FLAGS(ban, "ban a player", ADMFLAG_BAN)
 
     const char *pszCommandPlayerName = player ? player->GetPlayerName() : "Console";
 
-    ClientPrintAll(HUD_PRINTTALK, CHAT_PREFIX ADMIN_PREFIX "banned %s for %i minutes.", pszCommandPlayerName, pTarget->GetPlayerName(), iDuration);
+    ClientPrintAll(HUD_PRINTTALK, CHAT_PREFIX ADMIN_PREFIX "banned %s for %i minutes.", pTarget->GetPlayerName(), iDuration);
 
     if (iDuration > 0)
     {
@@ -199,8 +231,9 @@ CON_COMMAND_CHAT_FLAGS(ban, "ban a player", ADMFLAG_BAN)
         PrintSingleAdminAction(pszCommandPlayerName, pTarget->GetPlayerName(), "permanently banned");
     }
 
+    // Send Discord webhook message
     char jsonStr[2048];
-    snprintf(jsonStr, sizeof(jsonStr), jsonTemplate2, pszCommandPlayerName, pTarget->GetPlayerName(), iDuration);
+    snprintf(jsonStr, sizeof(jsonStr), jsonTemplate3, pszCommandPlayerName, pTarget->GetPlayerName(), iDuration);
 
     g_HTTPManager.POST(webHookUrl2, jsonStr, &HttpCallback2);
 }
@@ -271,7 +304,7 @@ CON_COMMAND_CHAT_FLAGS(mute, "mutes a player", ADMFLAG_CHAT)
 
         // Send Discord webhook message
         char jsonStr[2048];
-        snprintf(jsonStr, sizeof(jsonStr), jsonTemplate3, pTarget->GetPlayerName(), pTarget->GetPlayerName(), pszCommandPlayerName, szAction);
+        snprintf(jsonStr, sizeof(jsonStr), jsonTemplate4, pTarget->GetPlayerName(), pTarget->GetPlayerName(), pszCommandPlayerName, szAction);
 
         g_HTTPManager.POST(webHookUrl2, jsonStr, &HttpCallback2);
     }
