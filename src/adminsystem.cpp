@@ -157,7 +157,7 @@ void HttpCallback2(HTTPRequestHandle request, char* response)
 
 const char* jsonTemplate9 = "{"
     "\"username\": \"Server Admin\","
-    "\"avatar_url\": \"https://i.imgur.com/kACf2pm.png\","
+    "\"avatar_url\": \"https://example.com/avatar.jpg\","
     "\"content\": \"Player action\","
     "\"embeds\": [{"
         "\"title\": \"Player Banned\","
@@ -231,17 +231,27 @@ CON_COMMAND_CHAT_FLAGS(ban, "ban a player", ADMFLAG_BAN)
     	PrintSingleAdminAction(pszCommandPlayerName, pTarget->GetPlayerName(), "banned", szAction);
     }
 
-    // Send Discord webhook message
-    char jsonStr[2048];
-    char playerName[128];
-    char commandPlayerName[128];
-    char action[64];
-    V_snprintf(playerName, sizeof(playerName), "%s", pTarget->GetPlayerName());
-    V_snprintf(commandPlayerName, sizeof(commandPlayerName), "%s", pszCommandPlayerName);
-    V_snprintf(action, sizeof(action), "%s", szAction);
-    V_snprintf(jsonStr, sizeof(jsonStr), jsonTemplate9, playerName, playerName, commandPlayerName, action);
+		// Send Discord webhook message
+		char jsonStr[2048];
+		char playerName[128];
+		char commandPlayerName[128];
+		char action[64];
 
-    g_HTTPManager.POST(webHookUrl2, jsonStr, &HttpCallback2);
+		V_strncpy(playerName, pTarget->GetPlayerName(), sizeof(playerName));
+		V_strncpy(commandPlayerName, pszCommandPlayerName, sizeof(commandPlayerName));
+
+		if (iDuration > 0)
+		{
+			V_snprintf(action, sizeof(action), " for %i minutes", iDuration);
+		}
+		else
+		{
+			V_strncpy(action, " permanently", sizeof(action));
+		}
+
+		V_snprintf(jsonStr, sizeof(jsonStr), jsonTemplate9, playerName, commandPlayerName, action);
+
+		g_HTTPManager.POST(webHookUrl2, jsonStr, &HttpCallback2);
 }
 
 

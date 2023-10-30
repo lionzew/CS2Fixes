@@ -387,7 +387,7 @@ for (int i = 0; i < MAXPLAYERS; i++)
 
     if (!cPlayer || !pAdmin || pAdmin->IsFakeClient() || !pAdmin->IsAdminFlagSet(ADMFLAG_SLAY))
         continue;
-        ClientPrint(cPlayer, HUD_PRINTTALK, " \1(\2ADMINS CHAT\1) \4%s: \1 \13%s ", player->GetPlayerName(), args.ArgS());
+        ClientPrint(cPlayer, HUD_PRINTTALK, " \1(\2ADMINS CHAT\1) \4%s: \1 \13%s", player->GetPlayerName(), args.ArgS());
 }
 }
 

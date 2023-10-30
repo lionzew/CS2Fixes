@@ -64,6 +64,43 @@ void UnregisterEventListeners()
 	g_vecEventListeners.Purge();
 }
 
+int g_iBombTimerCounter = 0;
+
+GAME_EVENT_F(bomb_planted)
+{
+    ConVar* cvar = g_pCVar->GetConVar(g_pCVar->FindConVar("mp_c4timer"));
+
+    int iC4;
+    memcpy(&iC4, &cvar->values, sizeof(iC4));
+
+    g_iBombTimerCounter = iC4;
+
+    new CTimer(1.0f, false, []()
+    {
+        if (g_iBombTimerCounter <= 0)
+            return -1.0f;
+
+        g_iBombTimerCounter--;
+
+        ClientPrintAll(HUD_PRINTCENTER, "C4: %d", g_iBombTimerCounter);
+        return 1.0f;
+    });
+}
+
+GAME_EVENT_F(bomb_defused)
+{
+    g_iBombTimerCounter = 0;
+}
+
+GAME_EVENT_F(round_start)
+{
+    g_iBombTimerCounter = 0;
+}
+
+GAME_EVENT_F(round_end)
+{
+    g_iBombTimerCounter = 0;
+}
 
 GAME_EVENT_F(player_team)
 {
