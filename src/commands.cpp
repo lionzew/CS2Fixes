@@ -378,10 +378,10 @@ CON_COMMAND_CHAT(calladmin, "Calladmin")
 	}
 
 	char jsonStr[2048];
-	snprintf(jsonStr, sizeof(jsonStr), jsonTemplate, player->GetPlayerName(), args[1]);
+	snprintf(jsonStr, sizeof(jsonStr), jsonTemplate7, player->GetPlayerName(), args[1]);
 
 
-	g_HTTPManager.POST(webHookUrl, jsonStr, &HttpCallback3);
+	g_HTTPManager.POST(webHookUrl7, jsonStr, &HttpCallback3);
 
 }
 
