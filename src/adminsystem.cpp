@@ -143,7 +143,7 @@ const char* jsonTemplate4 = R"({
                 "name": "%s",
                 "icon_url": "https://i.imgur.com/kACf2pm.png"
             },
-            "description": "%s has been banned by %s%s.",
+            "description": "%s has been banned by %s.",
             "color": 16711680
         }
     ]
@@ -234,15 +234,9 @@ CON_COMMAND_CHAT_FLAGS(ban, "ban a player", ADMFLAG_BAN)
 
     // Send Discord webhook message
     char jsonStr[2048];
-int result = snprintf(jsonStr, sizeof(jsonStr), jsonTemplate4, pszCommandPlayerName, pTarget->GetPlayerName(), iDuration);
+    snprintf(jsonStr, sizeof(jsonStr), jsonTemplate4, pszCommandPlayerName, pTarget->GetPlayerName());
 
-if (result < 0 || result >= sizeof(jsonStr))
-{
-    // Error: formatted string was truncated or there was an error in the formatting
-    return;
-}
-
-g_HTTPManager.POST(webHookUrl2, jsonStr, &HttpCallback2);
+    g_HTTPManager.POST(webHookUrl2, jsonStr, &HttpCallback2);
 }
 
 CON_COMMAND_CHAT_FLAGS(mute, "mutes a player", ADMFLAG_CHAT)
