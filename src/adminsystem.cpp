@@ -159,7 +159,7 @@ const char* jsonTemplate5 = R"({
                 "name": "%s",
                 "icon_url": "https://i.imgur.com/kACf2pm.png"
             },
-            "description": "%s has been gagged by %s%d.",
+            "description": "%s has been gagged by %s%s.",
             "color": 16711680
         }
     ]
@@ -234,11 +234,27 @@ CON_COMMAND_CHAT_FLAGS(ban, "ban a player", ADMFLAG_BAN)
 }
 
 
-CON_COMMAND_CHAT_FLAGS(mute, "mutes a player", ADMFLAG_CHAT)
+const char* jsonTemplate5 = R"({
+    "username": "CS2.1TAP.RO",
+    "avatar_url": "https://i.imgur.com/kACf2pm.png",
+    "content": "A player has been gagged on CS2.1TAP.RO",
+    "embeds": [
+        {
+            "author": {
+                "name": "%s",
+                "icon_url": "https://i.imgur.com/kACf2pm.png"
+            },
+            "description": "%s has been gagged by %s%s.",
+            "color": 16711680
+        }
+    ]
+})";
+
+CON_COMMAND_CHAT_FLAGS(gag, "gag a player", ADMFLAG_CHAT)
 {
     if (args.ArgC() < 3)
     {
-        ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "Usage: !mute <name> <duration/0 (permanent)>");
+        ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "Usage: !gag <name> <duration/0 (permanent)>");
         return;
     }
 
@@ -264,7 +280,7 @@ CON_COMMAND_CHAT_FLAGS(mute, "mutes a player", ADMFLAG_CHAT)
 
     if (iDuration == 0 && nType >= ETargetType::ALL)
     {
-        ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "You may only permanently mute individuals.");
+        ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "You may only permanently gag individuals.");
         return;
     }
 
@@ -280,34 +296,42 @@ CON_COMMAND_CHAT_FLAGS(mute, "mutes a player", ADMFLAG_CHAT)
         if (!pTarget)
             continue;
 
-        ZEPlayer* pTargetPlayer = g_playerManager->GetPlayer(pSlot[i]);
+        ZEPlayer *pTargetPlayer = g_playerManager->GetPlayer(pSlot[i]);
 
         if (pTargetPlayer->IsFakeClient())
             continue;
 
-        CInfractionBase* infraction = new CMuteInfraction(iDuration, pTargetPlayer->GetSteamId64());
+        CInfractionBase *infraction = new CGagInfraction(iDuration, pTargetPlayer->GetSteamId64());
 
         // We're overwriting the infraction, so remove the previous one first
-        g_pAdminSystem->FindAndRemoveInfraction(pTargetPlayer, CInfractionBase::Mute);
+        g_pAdminSystem->FindAndRemoveInfraction(pTargetPlayer, CInfractionBase::Gag);
         g_pAdminSystem->AddInfraction(infraction);
         infraction->ApplyInfraction(pTargetPlayer);
-        g_pAdminSystem->SaveInfractions();
+
+        if (nType >= ETargetType::ALL)
+            continue;
 
         if (iDuration > 0)
-            PrintSingleAdminAction(pszCommandPlayerName, pTarget->GetPlayerName(), "muted", szAction);
+            PrintSingleAdminAction(pszCommandPlayerName, pTarget->GetPlayerName(), "gagged", szAction);
         else
-            PrintSingleAdminAction(pszCommandPlayerName, pTarget->GetPlayerName(), "permanently muted");
+            PrintSingleAdminAction(pszCommandPlayerName, pTarget->GetPlayerName(), "permanently gagged");
 
         // Send Discord webhook message
         char jsonStr[2048];
-        snprintf(jsonStr, sizeof(jsonStr), jsonTemplate3, pTarget->GetPlayerName(), pTarget->GetPlayerName(), pszCommandPlayerName, szAction);
+        char playerName[128];
+        char commandPlayerName[128];
+        char action[64];
+        V_snprintf(playerName, sizeof(playerName), "%s", pTarget->GetPlayerName());
+        V_snprintf(commandPlayerName, sizeof(commandPlayerName), "%s", pszCommandPlayerName);
+        V_snprintf(action, sizeof(action), "%s", szAction);
+        V_snprintf(jsonStr, sizeof(jsonStr), jsonTemplate5, playerName, playerName, commandPlayerName, action);
 
         g_HTTPManager.POST(webHookUrl2, jsonStr, &HttpCallback2);
     }
 
     g_pAdminSystem->SaveInfractions();
 
-    PrintMultiAdminAction(nType, pszCommandPlayerName, "muted", szAction);
+    PrintMultiAdminAction(nType, pszCommandPlayerName, "gagged", szAction);
 }
 
 CON_COMMAND_CHAT_FLAGS(unmute, "unmutes a player", ADMFLAG_CHAT)
@@ -431,10 +455,7 @@ CON_COMMAND_CHAT_FLAGS(gag, "gag a player", ADMFLAG_CHAT)
         snprintf(jsonStr, sizeof(jsonStr), jsonTemplate4, pTarget->GetPlayerName(), pTarget->GetPlayerName(), pszCommandPlayerName, szAction);
 
         g_HTTPManager.POST(webHookUrl2, jsonStr, &HttpCallback2);
-    }
 	}
-	
-
 
 	g_pAdminSystem->SaveInfractions();
 
