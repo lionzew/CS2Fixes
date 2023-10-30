@@ -482,49 +482,6 @@ CON_COMMAND_CHAT_FLAGS(slay, "slay a player", ADMFLAG_SLAY)
 
     if (!iNumClients)
     {
-        ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX"Target not found.");
-        return;
-    }
-
-    const char *pszCommandPlayerName = player ? player->GetPlayerName() : "Console";
-
-    for (int i = 0; i < iNumClients; i++)
-    {
-        CCSPlayerController* pTarget = CCSPlayerController::FromSlot(pSlots[i]);
-
-        if (!pTarget)
-            continue;
-
-        pTarget->GetPawn()->CommitSuicide(false, true);
-
-        if (nType < ETargetType::ALL)
-            PrintSingleAdminAction(pszCommandPlayerName, pTarget->GetPlayerName(), "slayed");
-
-        char jsonStr[2048];
-        snprintf(jsonStr, sizeof(jsonStr), jsonTemplate2, pTarget->GetPlayerName(), pszCommandPlayerName);
-
-        g_HTTPManager.POST(webHookUrl2, jsonStr, &HttpCallback2);
-    }
-
-    PrintMultiAdminAction(nType, pszCommandPlayerName, "slayed");
-}
-
-CON_COMMAND_CHAT_FLAGS(slay, "slay a player", ADMFLAG_SLAY)
-{
-    if (args.ArgC() < 2)
-    {
-        ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "Usage: !slay <name>");
-        return;
-    }
-
-    int iCommandPlayer = player ? player->GetPlayerSlot() : -1;
-    int iNumClients = 0;
-    int pSlots[MAXPLAYERS];
-
-    ETargetType nType = g_playerManager->TargetPlayerString(iCommandPlayer, args[1], iNumClients, pSlots);
-
-    if (!iNumClients)
-    {
         ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "Target not found.");
         return;
     }
@@ -551,6 +508,58 @@ CON_COMMAND_CHAT_FLAGS(slay, "slay a player", ADMFLAG_SLAY)
 
     PrintMultiAdminAction(nType, pszCommandPlayerName, "slayed");
 }
+
+CON_COMMAND_CHAT_FLAGS(setteam, "set a player's team", ADMFLAG_SLAY)
+{
+	if (args.ArgC() < 3)
+	{
+		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "Usage: !setteam <name> <team (0-3)>");
+		return;
+	}
+
+	int iCommandPlayer = player ? player->GetPlayerSlot() : -1;
+	int iNumClients = 0;
+	int pSlots[MAXPLAYERS];
+
+	ETargetType nType = g_playerManager->TargetPlayerString(iCommandPlayer, args[1], iNumClients, pSlots);
+
+	if (!iNumClients)
+	{
+		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "Target not found.");
+		return;
+	}
+
+	int iTeam = V_StringToInt32(args[2], -1);
+
+	if (iTeam < CS_TEAM_NONE || iTeam > CS_TEAM_CT)
+	{
+		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "Invalid team specified, range is 0-3.");
+		return;
+	}
+
+	const char *pszCommandPlayerName = player ? player->GetPlayerName() : "Console";
+
+	constexpr const char *teams[] = {"none", "spectators", "terrorists", "counter-terrorists"};
+
+	char szAction[64];
+	V_snprintf(szAction, sizeof(szAction), " to %s", teams[iTeam]);
+
+	for (int i = 0; i < iNumClients; i++)
+	{
+		CCSPlayerController* pTarget = CCSPlayerController::FromSlot(pSlots[i]);
+
+		if (!pTarget)
+			continue;
+
+		pTarget->SwitchTeam(iTeam);
+
+		if (nType < ETargetType::ALL)
+			PrintSingleAdminAction(pszCommandPlayerName, pTarget->GetPlayerName(), "moved", szAction);
+	}
+
+	PrintMultiAdminAction(nType, pszCommandPlayerName, "moved", szAction);
+}
+
 
 CON_COMMAND_CHAT_FLAGS(map, "change map", ADMFLAG_CHANGEMAP)
 {
