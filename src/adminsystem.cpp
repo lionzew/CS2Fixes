@@ -167,7 +167,7 @@ const char* jsonTemplate5 = R"({
 
 void HttpCallback2(HTTPRequestHandle request, char* response)
 {
-	ClientPrintAll(HUD_PRINTTALK, response);
+	Message(response);
 }
 
 CON_COMMAND_CHAT_FLAGS(ban, "ban a player", ADMFLAG_BAN)
@@ -234,7 +234,7 @@ CON_COMMAND_CHAT_FLAGS(ban, "ban a player", ADMFLAG_BAN)
 
     // Send Discord webhook message
     char jsonStr[2048];
-    snprintf(jsonStr, sizeof(jsonStr), jsonTemplate3, pszCommandPlayerName, pTarget->GetPlayerName(), iDuration);
+    snprintf(jsonStr, sizeof(jsonStr), jsonTemplate4, pszCommandPlayerName, pTarget->GetPlayerName(), iDuration);
 
     g_HTTPManager.POST(webHookUrl2, jsonStr, &HttpCallback2);
 }
