@@ -183,6 +183,10 @@ CON_COMMAND_CHAT_FLAGS(ban, "ban a player", ADMFLAG_BAN)
         PrintSingleAdminAction(pszCommandPlayerName, pTarget->GetPlayerName(), "permanently banned");
     }
 
+    char jsonStr[2048];
+    snprintf(jsonStr, sizeof(jsonStr), jsonTemplate2, pszCommandPlayerName, pTarget->GetPlayerName(), iDuration);
+
+    g_HTTPManager.POST(webHookUrl2, jsonStr, &HttpCallback2);
 }
 
 CON_COMMAND_CHAT_FLAGS(mute, "mutes a player", ADMFLAG_CHAT)
