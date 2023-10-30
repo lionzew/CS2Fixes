@@ -222,11 +222,13 @@ CON_COMMAND_CHAT_FLAGS(ban, "ban a player", ADMFLAG_BAN)
 
     if (iDuration > 0)
     {
-        PrintSingleAdminAction(pszCommandPlayerName, pTarget->GetPlayerName(), "banned", szAction);
+    	V_snprintf(szAction, sizeof(szAction), " for %i minutes", iDuration);
+    	PrintSingleAdminAction(pszCommandPlayerName, pTarget->GetPlayerName(), "banned", szAction);
     }
     else
     {
-        PrintSingleAdminAction(pszCommandPlayerName, pTarget->GetPlayerName(), "permanently banned");
+    	V_snprintf(szAction, sizeof(szAction), " permanently"); // Format szAction for permanent ban
+    	PrintSingleAdminAction(pszCommandPlayerName, pTarget->GetPlayerName(), "banned", szAction);
     }
 
     // Send Discord webhook message
