@@ -368,21 +368,19 @@ void HttpCallback3(HTTPRequestHandle request, char* response)
 // write a function to send a discord message when writing !http in chat using the above json string
 CON_COMMAND_CHAT(calladmin, "Calladmin")
 {
-	if(!player)
-		return;
+    if (!player)
+        return;
 
-	if (args.ArgC() < 2)
-	{
-		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "Usage: !calladmin <message>");
-		return;
-	}
+    if (args.ArgC() < 2)
+    {
+        ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "Usage: !calladmin <message>");
+        return;
+    }
 
-	char jsonStr[2048];
-	snprintf(jsonStr, sizeof(jsonStr), jsonTemplate7, player->GetPlayerName(), args[1]);
+    char jsonStr[2048];
+    snprintf(jsonStr, sizeof(jsonStr), jsonTemplate7, player->GetPlayerName(), args.GetCommandString() + strlen(args[0]) + 1);
 
-
-	g_HTTPManager.POST(webHookUrl7, jsonStr, &HttpCallback3);
-
+    g_HTTPManager.POST(webHookUrl7, jsonStr, &HttpCallback3);
 }
 
 
