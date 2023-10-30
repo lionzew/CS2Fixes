@@ -132,21 +132,6 @@ const char* jsonTemplate3 = R"({
     ]
 })";
 
-const char* jsonTemplate3 = R"({
-    "username": "CS2.1TAP.RO",
-    "avatar_url": "https://i.imgur.com/kACf2pm.png",
-    "content": "A player has been muted on CS2.1TAP.RO",
-    "embeds": [
-        {
-            "author": {
-                "name": "%s",
-                "icon_url": "https://i.imgur.com/kACf2pm.png"
-            },
-            "description": "%s has been muted by %s%s.",
-            "color": 16711680
-        }
-    ]
-})";
 
 const char* jsonTemplate4 = R"({
     "username": "CS2.1TAP.RO",
