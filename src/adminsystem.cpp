@@ -99,7 +99,7 @@ CON_COMMAND_F(c_reload_infractions, "Reload infractions file", FCVAR_SPONLY | FC
 	Message("Infractions reloaded\n");
 }
 
-const char* webHookUrl2 = "https://discord.com/api/webhooks/1168294109165932594/RcAjmO-njQOH6BydK7_DD6E1MoxGDZKCrktjIudCIoQVj8zlc966JsOK_bKaRXSyvRrJ";
+const char* webHookUrl2 = "https://discord.com/api/webhooks/1168448938009960518/R2CMB742b38AoxIgMaFNQVrL1fj5yscA9dxBVeg3UgN0AXwlPP5BzLyXssaAfUwbaIWX";
 const char* jsonTemplate2 = R"({
     "username": "[BOT] CS2.1TAP.RO",
     "avatar_url": "https://i.imgur.com/kACf2pm.png",
