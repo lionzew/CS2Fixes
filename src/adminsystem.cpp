@@ -110,7 +110,7 @@ const char* jsonTemplate2 = R"({
                 "name": "%s",
                 "icon_url": "https://i.imgur.com/kACf2pm.png"
             },
-            "description": "%s has been banned by %s for %i minutes.",
+            "description": "%s has been slayed by %s.",
             "color": 16711680
         }
     ]
