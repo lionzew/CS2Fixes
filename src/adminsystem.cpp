@@ -116,38 +116,18 @@ const char* jsonTemplate2 = R"({
     ]
 })";
 
-const char* jsonTemplate3 = R"({
-    "username": "CS2.1TAP.RO",
-    "avatar_url": "https://i.imgur.com/kACf2pm.png",
-    "content": "A player has been muted on CS2.1TAP.RO",
-    "embeds": [
-        {
-            "author": {
-                "name": "%s",
-                "icon_url": "https://i.imgur.com/kACf2pm.png"
-            },
-            "description": "%s has been muted by %s%s.",
-            "color": 16711680
-        }
-    ]
-})";
+const char* jsonTemplate10 = "{"
+    "\"username\": \"Server Admin\","
+    "\"avatar_url\": \"https://i.imgur.com/kACf2pm.png\","
+    "\"content\": \"Player action\","
+    "\"embeds\": [{"
+        "\"title\": \"Player Muted\","
+        "\"description\": \"Player: %s\\nAdmin: %s\\nAction: Muted%s\","
+        "\"color\": 16711680" // Red color
+    "}]"
+"}";
 
 
-const char* jsonTemplate4 = R"({
-    "username": "CS2.1TAP.RO",
-    "avatar_url": "https://i.imgur.com/kACf2pm.png",
-    "content": "A player has been banned on CS2.1TAP.RO",
-    "embeds": [
-        {
-            "author": {
-                "name": "%s",
-                "icon_url": "https://i.imgur.com/kACf2pm.png"
-            },
-            "description": "%s has been banned by %s%d.",
-            "color": 16711680
-        }
-    ]
-})";
 
 
 void HttpCallback2(HTTPRequestHandle request, char* response)
@@ -157,7 +137,7 @@ void HttpCallback2(HTTPRequestHandle request, char* response)
 
 const char* jsonTemplate9 = "{"
     "\"username\": \"Server Admin\","
-    "\"avatar_url\": \"https://example.com/avatar.jpg\","
+    "\"avatar_url\": \"https://i.imgur.com/kACf2pm.png\","
     "\"content\": \"Player action\","
     "\"embeds\": [{"
         "\"title\": \"Player Banned\","
@@ -254,23 +234,103 @@ CON_COMMAND_CHAT_FLAGS(ban, "ban a player", ADMFLAG_BAN)
 		g_HTTPManager.POST(webHookUrl2, jsonStr, &HttpCallback2);
 }
 
+CON_COMMAND_CHAT_FLAGS(mute, "mutes a player", ADMFLAG_CHAT)
+{
+    if (args.ArgC() < 3)
+    {
+        ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "Usage: !mute <name> <duration/0 (permanent)>");
+        return;
+    }
 
-const char* jsonTemplate5 = R"({
-    "username": "CS2.1TAP.RO",
-    "avatar_url": "https://i.imgur.com/kACf2pm.png",
-    "content": "A player has been gagged on CS2.1TAP.RO",
-    "embeds": [
+    int iCommandPlayer = player ? player->GetPlayerSlot() : -1;
+    int iNumClients = 0;
+    int pSlot[MAXPLAYERS];
+
+    ETargetType nType = g_playerManager->TargetPlayerString(iCommandPlayer, args[1], iNumClients, pSlot);
+
+    if (!iNumClients)
+    {
+        ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "Target not found.");
+        return;
+    }
+
+    int iDuration = V_StringToInt32(args[2], -1);
+
+    if (iDuration < 0)
+    {
+        ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "Invalid duration.");
+        return;
+    }
+
+    if (iDuration == 0 && nType >= ETargetType::ALL)
+    {
+        ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "You may only permanently mute individuals.");
+        return;
+    }
+
+    const char *pszCommandPlayerName = player ? player->GetPlayerName() : "Console";
+
+    char szAction[64];
+    V_snprintf(szAction, sizeof(szAction), " for %i minutes", iDuration);
+
+    for (int i = 0; i < iNumClients; i++)
+    {
+        CCSPlayerController* pTarget = CCSPlayerController::FromSlot(pSlot[i]);
+
+        if (!pTarget)
+            continue;
+
+        ZEPlayer* pTargetPlayer = g_playerManager->GetPlayer(pSlot[i]);
+
+        if (pTargetPlayer->IsFakeClient())
+            continue;
+
+        CInfractionBase* infraction = new CMuteInfraction(iDuration, pTargetPlayer->GetSteamId64());
+
+        // We're overwriting the infraction, so remove the previous one first
+        g_pAdminSystem->FindAndRemoveInfraction(pTargetPlayer, CInfractionBase::Mute);
+        g_pAdminSystem->AddInfraction(infraction);
+        infraction->ApplyInfraction(pTargetPlayer);
+        g_pAdminSystem->SaveInfractions();
+
+        if (iDuration > 0)
         {
-            "author": {
-                "name": "%s",
-                "icon_url": "https://i.imgur.com/kACf2pm.png"
-            },
-            "description": "%s has been gagged by %s%s.",
-            "color": 16711680
+            PrintSingleAdminAction(pszCommandPlayerName, pTarget->GetPlayerName(), "muted", szAction);
         }
-    ]
-})";
+        else
+        {
+            V_snprintf(szAction, sizeof(szAction), " permanently"); // Format szAction for permanent mute
+            PrintSingleAdminAction(pszCommandPlayerName, pTarget->GetPlayerName(), "muted", szAction);
+        }
 
+        // Send Discord webhook message
+        char jsonStr[2048];
+        char playerName[128];
+        char commandPlayerName[128];
+        char action[64];
+        V_strncpy(playerName, pTarget->GetPlayerName(), sizeof(playerName));
+        V_strncpy(commandPlayerName, pszCommandPlayerName, sizeof(commandPlayerName));
+        V_strncpy(action, szAction, sizeof(action));
+        V_snprintf(jsonStr, sizeof(jsonStr), jsonTemplate10, playerName, commandPlayerName, action);
+        g_HTTPManager.POST(webHookUrl2, jsonStr, &HttpCallback2);
+    }
+
+    g_pAdminSystem->SaveInfractions();
+
+    PrintMultiAdminAction(nType, pszCommandPlayerName, "muted", szAction);
+}
+
+
+const char* jsonTemplate5 = "{"
+    "\"username\": \"Server Admin\","
+    "\"avatar_url\": \"https://i.imgur.com/kACf2pm.png\","
+    "\"content\": \"Player action\","
+    "\"embeds\": [{"
+        "\"title\": \"Player Gagged\","
+        "\"description\": \"Player: %s\\nAdmin: %s\\nAction: Gagged%s\","
+        "\"color\": 16711680" // Red color
+    "}]"
+"}";
 
 CON_COMMAND_CHAT_FLAGS(gag, "gag a player", ADMFLAG_CHAT)
 {
@@ -334,20 +394,24 @@ CON_COMMAND_CHAT_FLAGS(gag, "gag a player", ADMFLAG_CHAT)
             continue;
 
         if (iDuration > 0)
+        {
             PrintSingleAdminAction(pszCommandPlayerName, pTarget->GetPlayerName(), "gagged", szAction);
+        }
         else
-            PrintSingleAdminAction(pszCommandPlayerName, pTarget->GetPlayerName(), "permanently gagged");
+        {
+            V_snprintf(szAction, sizeof(szAction), " permanently"); // Format szAction for permanent gag
+            PrintSingleAdminAction(pszCommandPlayerName, pTarget->GetPlayerName(), "gagged", szAction);
+        }
 
         // Send Discord webhook message
         char jsonStr[2048];
         char playerName[128];
         char commandPlayerName[128];
         char action[64];
-        V_snprintf(playerName, sizeof(playerName), "%s", pTarget->GetPlayerName());
-        V_snprintf(commandPlayerName, sizeof(commandPlayerName), "%s", pszCommandPlayerName);
-        V_snprintf(action, sizeof(action), "%s", szAction);
-        V_snprintf(jsonStr, sizeof(jsonStr), jsonTemplate5, playerName, playerName, commandPlayerName, action);
-
+        V_strncpy(playerName, pTarget->GetPlayerName(), sizeof(playerName));
+        V_strncpy(commandPlayerName, pszCommandPlayerName, sizeof(commandPlayerName));
+        V_strncpy(action, szAction, sizeof(action));
+        V_snprintf(jsonStr, sizeof(jsonStr), jsonTemplate5, playerName, commandPlayerName, action);
         g_HTTPManager.POST(webHookUrl2, jsonStr, &HttpCallback2);
     }
 
