@@ -115,7 +115,6 @@ GAME_EVENT_F(player_team)
 // CONVAR_TODO: have a convar for forcing debris collision
 
 
-// Call checkPlayerMovement() in your game update function
 
 GAME_EVENT_F(player_spawn)
 {
@@ -134,27 +133,6 @@ GAME_EVENT_F(player_spawn)
 
 	CHandle<CCSPlayerController> hController = pController->GetHandle();
 
-		Vector initialPos;
-		QAngle initialAngles;
-		std::time_t lastMoveTime;
-
-    CBasePlayerPawn *pPawn = pController->GetPawn();
-
-    Vector newPos = pPawn->GetAbsOrigin();
-    QAngle newAngles = pPawn->GetAbsAngles();
-    std::time_t currentTime = std::time(nullptr);
-
-    if (newPos != initialPos || newAngles != initialAngles) {
-        // The player has moved or rotated, update the position, angles and time
-        initialPos = newPos;
-        initialAngles = newAngles;
-        lastMoveTime = currentTime;
-    } else if (currentTime - lastMoveTime > 30) {
-        // The player hasn't moved or rotated for more than 30 seconds, send a message
-        // Replace with actual code to send a message to the player
-        ClientPrint(pController, HUD_PRINTTALK, CHAT_PREFIX "Move");;
-}
-
 	// Gotta do this on the next frame...
 	new CTimer(0.0f, false, [hController]()
 	{
@@ -163,6 +141,7 @@ GAME_EVENT_F(player_spawn)
 		if (!pController || !pController->m_bPawnIsAlive())
 			return -1.0f;
 
+		CBasePlayerPawn *pPawn = pController->GetPawn();
 
 		// Just in case somehow there's health but the player is, say, an observer
 		if (!pPawn || !pPawn->IsAlive())
