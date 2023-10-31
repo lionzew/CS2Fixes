@@ -23,6 +23,7 @@
 #include "ctimer.h"
 #include "eventlistener.h"
 #include "entity/cbaseplayercontroller.h"
+#include "cdetour.h"
 
 #include "tier0/memdbgon.h"
 #include "playermanager.h"
@@ -110,18 +111,6 @@ GAME_EVENT_F(player_team)
 
 // CONVAR_TODO: have a convar for forcing debris collision
 
-template <typename... Args>
-std::string string_format(const std::string &format, Args... args)
-{
-    int size_s = snprintf(nullptr, 0, format.c_str(), args...) + 1;
-    if (size_s <= 0)
-        throw std::runtime_error("Invalid Size");
-
-    size_t size = static_cast<size_t>(size_s);
-    std::unique_ptr<char[]> buf(new char[size]);
-    snprintf(buf.get(), size, format.c_str(), args...);
-    return std::string(buf.get(), buf.get() + size - 1);
-}
 
 
 GAME_EVENT_F(player_spawn)
