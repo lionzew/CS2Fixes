@@ -114,29 +114,6 @@ GAME_EVENT_F(player_team)
 
 // CONVAR_TODO: have a convar for forcing debris collision
 
-
-// Call checkPlayerMovement() in your game update function
-
-GAME_EVENT_F(player_spawn)
-{
-	CCSPlayerController *pController = (CCSPlayerController *)pEvent->GetPlayerController("userid");
-
-	if (!pController)
-		return;
-
-		int iPlayer = pController->GetPlayerSlot();
-		ZEPlayer* pZEPlayer = g_playerManager->GetPlayer(iPlayer);
-
-	if (pZEPlayer)
-		{
-			pZEPlayer->SetUsedMedkit(false);
-		}
-
-	CHandle<CCSPlayerController> hController = pController->GetHandle();
-
-	#include <ctime>
-
-// Assuming pPawn is a pointer to the player's pawn
 Vector initialPos;
 QAngle initialAngles;
 std::time_t lastMoveTime;
@@ -160,6 +137,25 @@ void checkPlayerMovement() {
         ClientPrint(pController, HUD_PRINTTALK, CHAT_PREFIX "Move");;
     }
 }
+
+// Call checkPlayerMovement() in your game update function
+
+GAME_EVENT_F(player_spawn)
+{
+	CCSPlayerController *pController = (CCSPlayerController *)pEvent->GetPlayerController("userid");
+
+	if (!pController)
+		return;
+
+		int iPlayer = pController->GetPlayerSlot();
+		ZEPlayer* pZEPlayer = g_playerManager->GetPlayer(iPlayer);
+
+	if (pZEPlayer)
+		{
+			pZEPlayer->SetUsedMedkit(false);
+		}
+
+	CHandle<CCSPlayerController> hController = pController->GetHandle();
 
 	// Gotta do this on the next frame...
 	new CTimer(0.0f, false, [hController]()
