@@ -183,7 +183,7 @@ GAME_EVENT_F(player_spawn)
             pController->m_szClan("[OWNER]");
         }
         else {
-            pController->m_szClan("[Player]");
+            pController->m_szClan("#%i | ", g_pEngineServer2->GetPlayerUserId(iPlayer).Get());
         }	
 
 		return -1.0f;
