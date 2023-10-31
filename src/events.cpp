@@ -29,6 +29,9 @@
 #include "playermanager.h"
 #include "entity/ccsplayercontroller.h"
 #include "adminsystem.h"
+#include <memory>
+#include <string>
+#include <stdexcept>
 
 extern IGameEventManager2 *g_gameEventManager;
 extern IServerGameClients *g_pSource2GameClients;

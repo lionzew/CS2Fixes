@@ -25,6 +25,9 @@
 #include "plat.h"
 #include "gameconfig.h"
 #include "addresses.h"
+#include <memory>
+#include <string>
+#include <stdexcept>
 
 class CDetourBase
 {
