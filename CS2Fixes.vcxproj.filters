@@ -98,9 +98,9 @@
     <ClCompile Include="src\httpmanager.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-        <ClCompile Include="src\votemanager.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
+	<ClCompile Include="src\rockthevote.cpp">
+		<Filter>Source Files</Filter>
+	</ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\mempatch.h">
@@ -202,5 +202,8 @@
     <ClInclude Include="src\votemanager.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    	<ClInclude Include="src\rockthevote.h">
+		<Filter>Header Files</Filter>
+	</ClInclude>
   </ItemGroup>
 </Project>
