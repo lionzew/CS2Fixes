@@ -672,13 +672,33 @@ CON_COMMAND_CHAT_FLAGS(slay, "slay a player", ADMFLAG_SLAY)
     PrintMultiAdminAction(nType, pszCommandPlayerName, "slayed");
 }
 
-CON_COMMAND_CHAT_FLAGS(setteam, "set a player's team", ADMFLAG_SLAY)
+bool caseInsensitiveStringCompare( const std::string& str1, const std::string& str2 ) {
+    std::string str1Cpy( str1 );
+    std::string str2Cpy( str2 );
+    std::transform( str1Cpy.begin(), str1Cpy.end(), str1Cpy.begin(), ::tolower );
+    std::transform( str2Cpy.begin(), str2Cpy.end(), str2Cpy.begin(), ::tolower );
+    return ( str1Cpy == str2Cpy );
+}
+CON_COMMAND_CHAT_FLAGS(move, "set a player's team", ADMFLAG_SLAY)
 {
 	if (args.ArgC() < 3)
 	{
-		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "Usage: !setteam <name> <team (0-3)>");
+		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "Usage: !move <name> <team (ct,t,spec)>");
 		return;
 	}
+
+	int iTeam = -1;
+	//int iTeam = V_StringToInt32(args[2], -1);
+	if ( caseInsensitiveStringCompare(args[2], "T" )) {
+   iTeam = 2;
+  
+} else if ( caseInsensitiveStringCompare(args[2], "CT" )) {
+   iTeam = 3;
+   
+} else if ( caseInsensitiveStringCompare(args[2], "SPEC" )) {
+   iTeam = 1;
+   //strcpy(cTeam, "SPEC");
+}
 
 	int iCommandPlayer = player ? player->GetPlayerSlot() : -1;
 	int iNumClients = 0;
@@ -692,11 +712,10 @@ CON_COMMAND_CHAT_FLAGS(setteam, "set a player's team", ADMFLAG_SLAY)
 		return;
 	}
 
-	int iTeam = V_StringToInt32(args[2], -1);
 
 	if (iTeam < CS_TEAM_NONE || iTeam > CS_TEAM_CT)
 	{
-		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "Invalid team specified, range is 0-3.");
+		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "Invalid team specified, use spec, t, ct.");
 		return;
 	}
 
@@ -718,10 +737,12 @@ CON_COMMAND_CHAT_FLAGS(setteam, "set a player's team", ADMFLAG_SLAY)
 
 		if (nType < ETargetType::ALL)
 			PrintSingleAdminAction(pszCommandPlayerName, pTarget->GetPlayerName(), "moved", szAction);
+		pTarget->GetPawn()->CommitSuicide(false, true);
 	}
 
 	PrintMultiAdminAction(nType, pszCommandPlayerName, "moved", szAction);
 }
+
 
 
 CON_COMMAND_CHAT_FLAGS(map, "change map", ADMFLAG_CHANGEMAP)
