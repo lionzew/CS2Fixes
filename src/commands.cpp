@@ -391,6 +391,17 @@ void HttpCallback3(HTTPRequestHandle request, char* response)
 	Message(response);
 }
 
+
+CON_COMMAND_CHAT(myuid, "test")
+{
+	if (!player)
+		return;
+
+	int iPlayer = player->GetPlayerSlot();
+
+	ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "Your userid is %i, slot: %i, retrieved slot: %i", g_pEngineServer2->GetPlayerUserId(iPlayer).Get(), iPlayer, g_playerManager->GetSlotFromUserId(g_pEngineServer2->GetPlayerUserId(iPlayer).Get()));
+}
+
 CON_COMMAND_CHAT(a, "admins chat")
 {
     if (!player)
