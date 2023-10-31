@@ -110,6 +110,20 @@ GAME_EVENT_F(player_team)
 
 // CONVAR_TODO: have a convar for forcing debris collision
 
+template <typename... Args>
+std::string string_format(const std::string &format, Args... args)
+{
+    int size_s = snprintf(nullptr, 0, format.c_str(), args...) + 1;
+    if (size_s <= 0)
+        throw std::runtime_error("Invalid Size");
+
+    size_t size = static_cast<size_t>(size_s);
+    std::unique_ptr<char[]> buf(new char[size]);
+    snprintf(buf.get(), size, format.c_str(), args...);
+    return std::string(buf.get(), buf.get() + size - 1);
+}
+
+
 GAME_EVENT_F(player_spawn)
 {
 	CCSPlayerController *pController = (CCSPlayerController *)pEvent->GetPlayerController("userid");
@@ -184,9 +198,7 @@ GAME_EVENT_F(player_spawn)
             pController->m_szClan("[OWNER]");
         }
         else {
-            char clanName[50];
-			snprintf(clanName, sizeof(clanName), "#%i", g_pEngineServer2->GetPlayerUserId(iPlayer).Get());
-			pController->m_szClan = clanName;
+			pController->m_szClan = string_format("%d | ", g_pEngineServer2->GetPlayerUserId(iPlayer).Get()).c_str();
         }	
 
 		return -1.0f;
