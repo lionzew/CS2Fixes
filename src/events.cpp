@@ -122,6 +122,7 @@ QAngle initialAngles;
 std::time_t lastMoveTime;
 
 void checkPlayerMovement() {
+	CBasePlayerController *pController = (CBasePlayerController*)pEvent->GetPlayerController("userid");
     auto pPawn = pController->GetPawn();
 
     Vector newPos = pPawn->GetAbsOrigin();
@@ -136,7 +137,7 @@ void checkPlayerMovement() {
     } else if (currentTime - lastMoveTime > 30) {
         // The player hasn't moved or rotated for more than 30 seconds, send a message
         // Replace with actual code to send a message to the player
-        std::cout << "Please move!" << std::endl;
+        ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "Move");;
     }
 }
 
