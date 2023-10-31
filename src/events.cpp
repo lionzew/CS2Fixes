@@ -114,7 +114,32 @@ GAME_EVENT_F(player_team)
 
 // CONVAR_TODO: have a convar for forcing debris collision
 
+#include <ctime>
 
+// Assuming pPawn is a pointer to the player's pawn
+Vector initialPos = pPawn->GetAbsOrigin();
+QAngle initialAngles = pPawn->GetAbsAngles();
+std::time_t lastMoveTime = std::time(nullptr);
+
+while (true) {
+    // Wait for 1 second
+    std::this_thread::sleep_for(std::chrono::seconds(1));
+
+    Vector newPos = pPawn->GetAbsOrigin();
+    QAngle newAngles = pPawn->GetAbsAngles();
+    std::time_t currentTime = std::time(nullptr);
+
+    if (newPos != initialPos || newAngles != initialAngles) {
+        // The player has moved or rotated, update the position, angles and time
+        initialPos = newPos;
+        initialAngles = newAngles;
+        lastMoveTime = currentTime;
+    } else if (currentTime - lastMoveTime > 30) {
+        // The player hasn't moved or rotated for more than 30 seconds, send a message
+        // Replace with actual code to send a message to the player
+        std::cout << "Please move!" << std::endl;
+    }
+}
 
 GAME_EVENT_F(player_spawn)
 {
