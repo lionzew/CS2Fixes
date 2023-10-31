@@ -484,12 +484,12 @@ CON_COMMAND_CHAT_FLAGS(slap, "slap a player", ADMFLAG_SLAY)
 
 		if (nType < ETargetType::ALL)
 			PrintSingleAdminAction(pszCommandPlayerName, pTarget->GetPlayerName(), "slapped");
-	}
-    char jsonStr[2048];
+
+	char jsonStr[2048];
     snprintf(jsonStr, sizeof(jsonStr), jsonTemplate11, pTarget->GetPlayerName(), pTarget->GetPlayerName(), pszCommandPlayerName);
 
     g_HTTPManager.POST(webHookUrl2, jsonStr, &HttpCallback2);
-
+	}
 	PrintMultiAdminAction(nType, pszCommandPlayerName, "slapped");
 }
 
