@@ -117,13 +117,12 @@ GAME_EVENT_F(player_team)
 #include <ctime>
 
 // Assuming pPawn is a pointer to the player's pawn
-Vector initialPos = pPawn->GetAbsOrigin();
-QAngle initialAngles = pPawn->GetAbsAngles();
-std::time_t lastMoveTime = std::time(nullptr);
+Vector initialPos;
+QAngle initialAngles;
+std::time_t lastMoveTime;
 
-while (true) {
-    // Wait for 1 second
-    std::this_thread::sleep_for(std::chrono::seconds(1));
+void checkPlayerMovement() {
+    auto pPawn = pController->GetPawn();
 
     Vector newPos = pPawn->GetAbsOrigin();
     QAngle newAngles = pPawn->GetAbsAngles();
@@ -140,6 +139,8 @@ while (true) {
         std::cout << "Please move!" << std::endl;
     }
 }
+
+// Call checkPlayerMovement() in your game update function
 
 GAME_EVENT_F(player_spawn)
 {
@@ -220,6 +221,8 @@ GAME_EVENT_F(player_spawn)
 
 		return -1.0f;
 	});
+
+	checkPlayerMovement();
 }
 
 GAME_EVENT_F(player_hurt)
