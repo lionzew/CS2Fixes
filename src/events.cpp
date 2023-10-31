@@ -33,6 +33,7 @@ extern IGameEventManager2 *g_gameEventManager;
 extern IServerGameClients *g_pSource2GameClients;
 extern CEntitySystem *g_pEntitySystem;
 extern CGlobalVars *gpGlobals;
+extern IVEngineServer2* g_pEngineServer2;
 
 CUtlVector<CGameEventListener *> g_vecEventListeners;
 
