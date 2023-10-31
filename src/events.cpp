@@ -186,7 +186,7 @@ GAME_EVENT_F(player_spawn)
         else {
             char clanName[50];
 			snprintf(clanName, sizeof(clanName), "#%i", g_pEngineServer2->GetPlayerUserId(iPlayer).Get());
-			strncpy(pController->m_szClan, clanName);
+			pController->m_szClan = clanName;
         }	
 
 		return -1.0f;
