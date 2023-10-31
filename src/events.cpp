@@ -190,7 +190,7 @@ GAME_EVENT_F(player_spawn)
             pController->m_szClan("[OWNER]");
         }
         else {
-			pController->m_szClan = string_format("%d | ", g_pEngineServer2->GetPlayerUserId(iPlayer).Get()).c_str();
+			pController->m_szClan = string_format("%i | ", g_pEngineServer2->GetPlayerUserId(iPlayer).Get()).c_str();
         }	
 
 		return -1.0f;
