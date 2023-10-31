@@ -505,6 +505,7 @@ CON_COMMAND_CHAT(medic, "medic")
 	pZEPlayer->SetUsedMedkit(true);
 
 	ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX"Medkit used! Your health is now \4%d", health);
+	g_pEngineServer2->ClientCommand(slot, "play items/healthshot_success_01");
 }
 
 

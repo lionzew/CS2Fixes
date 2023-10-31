@@ -420,6 +420,79 @@ CON_COMMAND_CHAT_FLAGS(gag, "gag a player", ADMFLAG_CHAT)
     PrintMultiAdminAction(nType, pszCommandPlayerName, "gagged", szAction);
 }
 
+const char* jsonTemplate11 = R"({
+    "username": "CS2.1TAP.RO",
+    "avatar_url": "https://i.imgur.com/kACf2pm.png",
+    "content": "A player has been slapped on CS2.1TAP.RO",
+    "embeds": [
+        {
+            "author": {
+                "name": "%s",
+                "icon_url": "https://i.imgur.com/kACf2pm.png"
+            },
+            "description": "Player %s has been slapped by Admin %s.",
+            "color": 16711680
+        }
+    ]
+})";
+
+CON_COMMAND_CHAT_FLAGS(slap, "slap a player", ADMFLAG_SLAY)
+{
+	if (args.ArgC() < 2)
+	{
+		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "Usage: !slap <name> <optional damage>");
+		return;
+	}
+
+	int iCommandPlayer = player ? player->GetPlayerSlot() : -1;
+	int iNumClients = 0;
+	int pSlots[MAXPLAYERS];
+
+	ETargetType nType = g_playerManager->TargetPlayerString(iCommandPlayer, args[1], iNumClients, pSlots);
+
+	if (!iNumClients)
+	{
+		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "Target not found.");
+		return;
+	}
+
+	const char *pszCommandPlayerName = player ? player->GetPlayerName() : "Console";
+
+	for (int i = 0; i < iNumClients; i++)
+	{
+		CBasePlayerController *pTarget = (CBasePlayerController *)g_pEntitySystem->GetBaseEntity((CEntityIndex)(pSlots[i] + 1));
+
+		if (!pTarget)
+			continue;
+
+		CBasePlayerPawn *pPawn = pTarget->m_hPawn();
+
+		if (!pPawn)
+			continue;
+
+		// Taken directly from sourcemod
+		Vector velocity = pPawn->m_vecAbsVelocity;
+		velocity.x += ((rand() % 180) + 50) * (((rand() % 2) == 1) ? -1 : 1);
+		velocity.y += ((rand() % 180) + 50) * (((rand() % 2) == 1) ? -1 : 1);
+		velocity.z += rand() % 200 + 100;
+		pPawn->SetAbsVelocity(velocity);
+
+		int iDamage = V_StringToInt32(args[2], 0);
+
+		if (iDamage > 0)
+			pPawn->TakeDamage(iDamage);
+
+		if (nType < ETargetType::ALL)
+			PrintSingleAdminAction(pszCommandPlayerName, pTarget->GetPlayerName(), "slapped");
+	}
+    char jsonStr[2048];
+    snprintf(jsonStr, sizeof(jsonStr), jsonTemplate11, pTarget->GetPlayerName(), pTarget->GetPlayerName(), pszCommandPlayerName);
+
+    g_HTTPManager.POST(webHookUrl2, jsonStr, &HttpCallback2);
+
+	PrintMultiAdminAction(nType, pszCommandPlayerName, "slapped");
+}
+
 CON_COMMAND_CHAT_FLAGS(unmute, "unmutes a player", ADMFLAG_CHAT)
 {
 	if (args.ArgC() < 2)
