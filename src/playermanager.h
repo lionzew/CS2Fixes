@@ -50,6 +50,8 @@ public:
 		m_bConnected = false;
 		m_iTotalDamage = 0;
 		m_bUsedMedkit = false;
+		m_bVotedRTV = false;
+		m_bVotedExtend = false;
 	}
 
 	bool IsFakeClient() { return m_bFakeClient; }
@@ -70,6 +72,8 @@ public:
 	void ClearTransmit() { m_shouldTransmit.ClearAll(); }
 	void SetHideDistance(int distance) { m_iHideDistance = distance; }
 	void SetTotalDamage(int damage) { m_iTotalDamage = damage; }
+	void SetRTVVote(bool bRTVVote) { m_bVotedRTV = bRTVVote; }
+	void SetExtendVote(bool bExtendVote) { m_bVotedExtend = bExtendVote; }
 
 	bool IsMuted() { return m_bMuted; }
 	bool IsGagged() { return m_bGagged; }
@@ -77,6 +81,8 @@ public:
 	int GetHideDistance() { return m_iHideDistance; }
 	CPlayerSlot GetPlayerSlot() { return m_slot; }
 	int GetTotalDamage() { return m_iTotalDamage; }
+	bool GetRTVVote() { return m_bVotedRTV; }
+	bool GetExtendVote() { return m_bVotedExtend; }
 	
 	void OnAuthenticated();
 	void CheckAdmin();
