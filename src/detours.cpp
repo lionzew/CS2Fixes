@@ -208,7 +208,7 @@ void FASTCALL Detour_UTIL_SayText2Filter(
             V_snprintf(sBuffer, sizeof(sBuffer), " \1[\4Player\1]\1 %s: \1%s", param1, param2);
         }
 
-		UTIL_SayText2Filter(filter, pEntity, eMessageType, msg_name, sBuffer, param2, param3, param4);
+		UTIL_SayTextFilter(filter, sBuffer, pEntity, eMessageType);
 }
 
 void FASTCALL Detour_Host_Say(CCSPlayerController *pController, CCommand &args, bool teamonly, int unk1, const char *unk2)
