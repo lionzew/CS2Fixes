@@ -206,16 +206,6 @@ void FASTCALL Detour_UTIL_SayText2Filter(
 
 	     int iCommandPlayer = pEntity->GetPlayerSlot();
 
-	else {
-    const char* teamColor;
-    if (isPlayerCT(pController)) {  // Check if the player is CT
-        teamColor = "\3";  // Blue for CT
-    } else {
-        teamColor = "\4";  // Red for T
-    }
-    V_snprintf(sBuffer, sizeof(sBuffer), " %s[\4Player%s]\1 %s: \1%s", teamColor, teamColor, param1, param2);
-}
-
     ZEPlayer *pPlayer = g_playerManager->GetPlayer(iCommandPlayer);
 	
 		char sBuffer[256];
