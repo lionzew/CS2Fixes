@@ -161,6 +161,10 @@ GAME_EVENT_F(player_spawn)
         {
             pController->m_szClan("[Project Manager]");
         }
+        else if (pZEPlayer->IsAdminFlagSet(ADMFLAG_CUSTOM7)) // t
+        {
+            pController->m_szClan("[Head Admin]");
+        }
         else if (pZEPlayer->IsAdminFlagSet(ADMFLAG_CHEATS)) // z
         {
             pController->m_szClan("[OWNER]");
