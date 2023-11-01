@@ -211,35 +211,6 @@ void ClientPrint(CBasePlayerController *player, int hud_dest, const char *msg, .
 }
 
 
-
-CON_COMMAND_CHAT(vipinfo, "vip info")
-{
-	if (!player)
-		return;
-
-	ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX"\1Starting health: \4 100-115.");
-	ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX"\1Starting armor: \4 110-120.");
-	ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX"\1Money add every round: \4 1000-3000.");
-	ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX"\1Starting with: \4 defeuser, he, smoke, molotov, flashbang.");
-	ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX"\1Smoke color: \4 green.");
-	ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX"\1For buying VIP, join our discord: \4 discord.gg/1tap.");
-}
-
-// make a command that prints test
-
-CON_COMMAND_CHAT(vip, "vip info")
-{
-	if (!player)
-		return;
-
-	ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX"\1Starting health: \4 100-115.");
-	ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX"\1Starting armor: \4 110-120.");
-	ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX"\1Money add every round: \4 1000-3000.");
-	ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX"\1Starting with: \4 defeuser, he, smoke, molotov, flashbang.");
-	ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX"\1Smoke color: \4 green.");
-	ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX"\1For buying VIP, join our discord: \4 discord.gg/1tap.");
-}
-
 CON_COMMAND_CHAT(rs, "reset your score")
 {
 	if (!player)
@@ -255,31 +226,6 @@ CON_COMMAND_CHAT(rs, "reset your score")
 	ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX"You successfully reset your score.");
 }
 
-CON_COMMAND_CHAT(ws, "reset your score")
-{
-	if (!player)
-		return;
-
-
-	ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX"-------------------------------------------------");
-	ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX" \x01 Foloseste comanda \x06skin <skin_id> \x01in CONSOLA!");
-	ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX" \x01 Pentru a gasi \x06skin_id \x01poti folosi site-ul \x06 csgostash.com !");
-	ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX" \x01 Mai multe detalii pe \x06 discord.gg/1tap!");
-	ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX"-------------------------------------------------");
-}
-
-CON_COMMAND_CHAT(knife, "reset your score")
-{
-	if (!player)
-		return;
-
-
-	ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX"-------------------------------------------------");
-	ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX" \x01 Foloseste comanda \x06knife <nume> \x01in CONSOLA!");
-	ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX" \x01 Variantele de nume acceptate sunt \x06karambit, bayonet, css, m9, bowie, butterfly, flip, push, huntsman, falchion, gut, ursus, navaja, stiletto, talon, paracord, survival, nomad !");
-	ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX" \x01 Mai multe detalii pe \x06 discord.gg/1tap!");
-	ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX"-------------------------------------------------");
-}
 
 
 CON_COMMAND_CHAT(who, "get list of all admin players online")
@@ -368,39 +314,6 @@ CON_COMMAND_CHAT(who, "get list of all admin players online")
     }
 }
 
-const char* webHookUrl7 = "https://discord.com/api/webhooks/1168484465253826631/TuDaqbAWGbBwBjSIYmaV-7AW-9GLdrarT2ULqEsLl9dN3xoy7LVsQTGkLcowJrrxH1eP";
-const char* jsonTemplate7 = R"({
-		"username": "[BOT] CS2.1TAP.RO",
-		"avatar_url": "https://i.imgur.com/kACf2pm.png",
-		"content": "@everyone Cheater reported!",
-		"embeds": [
-			{
-				"author": {
-					"name": "%s",
-					"icon_url": "https://i.imgur.com/kACf2pm.png"
-				},
-				"description": "%s",
-				"color": 16711680
-			}
-		]
-	})";
-
-
-void HttpCallback3(HTTPRequestHandle request, char* response)
-{
-	Message(response);
-}
-
-
-CON_COMMAND_CHAT(myuid, "test")
-{
-	if (!player)
-		return;
-
-	int iPlayer = player->GetPlayerSlot();
-
-	ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "Your userid is %i, slot: %i, retrieved slot: %i", g_pEngineServer2->GetPlayerUserId(iPlayer).Get(), iPlayer, g_playerManager->GetSlotFromUserId(g_pEngineServer2->GetPlayerUserId(iPlayer).Get()));
-}
 
 CON_COMMAND_CHAT(a, "admins chat")
 {
@@ -426,86 +339,6 @@ for (int i = 0; i < MAXPLAYERS; i++)
         continue;
         ClientPrint(cPlayer, HUD_PRINTTALK, " \1(\2ADMINS CHAT\1) \4%s: \1 \13%s", player->GetPlayerName(), args.ArgS());
 }
-}
-
-// write a function to send a discord message when writing !http in chat using the above json string
-CON_COMMAND_CHAT(calladmin, "Calladmin")
-{
-    if (!player)
-        return;
-
-    if (args.ArgC() < 2)
-    {
-        ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "Usage: !calladmin <message>");
-        return;
-    }
-
-    char jsonStr[2048];
-    snprintf(jsonStr, sizeof(jsonStr), jsonTemplate7, player->GetPlayerName(), args.GetCommandString() + strlen(args[0]) + 1);
-
-    g_HTTPManager.POST(webHookUrl7, jsonStr, &HttpCallback3);
-}
-
-
-CON_COMMAND_CHAT(medic, "medic")
-{
-	if (!player)
-		return;
-
-	int health = 0;
-	int iPlayer = player->GetPlayerSlot();
-
-	Z_CBaseEntity* pEnt = (Z_CBaseEntity*)player->GetPawn();
-
-	//ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIXM"pZEPlayer testing...");
-
-	ZEPlayer* pZEPlayer = g_playerManager->GetPlayer(iPlayer);
-	if (!pZEPlayer)
-	{
-		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX"pZEPlayer not valid.");
-		return;
-	}
-
-	if (!pZEPlayer->IsAdminFlagSet(ADMFLAG_CONVARS))
-	{
-		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX"You don't have acces to this command.");
-		return;
-	}
-
-	//ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIXM"pZEPlayer valid.");
-
-
-
-	if (pZEPlayer->WasUsingMedkit())
-	{
-		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX"You already used your medkit in this round");
-		return;
-	}
-
-	if (pEnt->m_iHealth() < 1)
-	{
-		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX"You need to be alive in order to use medkit.");
-		return;
-	}
-
-
-		if (pEnt->m_iHealth() > 99)
-	{
-		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX"You have enough life.");
-		return;
-	}
-
-	health = pEnt->m_iHealth() + 50;
-
-	if (health > 100)
-		health = 100;
-
-	pEnt->m_iHealth = health;
-
-	pZEPlayer->SetUsedMedkit(true);
-
-	ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX"Medkit used! Your health is now \4%d", health);
-	g_pEngineServer2->ClientCommand(player->GetPlayerSlot(), "play items/healthshot_success_01");
 }
 
 
