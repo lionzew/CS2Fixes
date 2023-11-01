@@ -99,52 +99,6 @@ CON_COMMAND_F(c_reload_infractions, "Reload infractions file", FCVAR_SPONLY | FC
 	Message("Infractions reloaded\n");
 }
 
-const char* webHookUrl2 = "https://discord.com/api/webhooks/1168448938009960518/R2CMB742b38AoxIgMaFNQVrL1fj5yscA9dxBVeg3UgN0AXwlPP5BzLyXssaAfUwbaIWX";
-const char* jsonTemplate2 = R"({
-    "username": "CS2.1TAP.RO",
-    "avatar_url": "https://i.imgur.com/kACf2pm.png",
-    "content": "A player has been slayed on CS2.1TAP.RO",
-    "embeds": [
-        {
-            "author": {
-                "name": "%s",
-                "icon_url": "https://i.imgur.com/kACf2pm.png"
-            },
-            "description": "Player %s has been slayed by Admin %s.",
-            "color": 16711680
-        }
-    ]
-})";
-
-const char* jsonTemplate10 = "{"
-    "\"username\": \"Server Admin\","
-    "\"avatar_url\": \"https://i.imgur.com/kACf2pm.png\","
-    "\"content\": \"Player action\","
-    "\"embeds\": [{"
-        "\"title\": \"Player Muted\","
-        "\"description\": \"Player: %s\\nAdmin: %s\\nAction: Muted%s\","
-        "\"color\": 16711680" // Red color
-    "}]"
-"}";
-
-
-
-
-void HttpCallback2(HTTPRequestHandle request, char* response)
-{
-	Message(response);
-}
-
-const char* jsonTemplate9 = "{"
-    "\"username\": \"Server Admin\","
-    "\"avatar_url\": \"https://i.imgur.com/kACf2pm.png\","
-    "\"content\": \"Player action\","
-    "\"embeds\": [{"
-        "\"title\": \"Player Banned\","
-        "\"description\": \"Player: %s\\nAdmin: %s\\nAction: Banned%s\","
-        "\"color\": 16711680" // Red color
-    "}]"
-"}";
 
 CON_COMMAND_CHAT_FLAGS(ban, "ban a player", ADMFLAG_BAN)
 {
@@ -211,15 +165,6 @@ CON_COMMAND_CHAT_FLAGS(ban, "ban a player", ADMFLAG_BAN)
     	PrintSingleAdminAction(pszCommandPlayerName, pTarget->GetPlayerName(), "banned", szAction);
     }
 
-		// Send Discord webhook message
-		char jsonStr[2048];
-		char playerName[128];
-		char commandPlayerName[128];
-		char action[64];
-
-		V_strncpy(playerName, pTarget->GetPlayerName(), sizeof(playerName));
-		V_strncpy(commandPlayerName, pszCommandPlayerName, sizeof(commandPlayerName));
-
 		if (iDuration > 0)
 		{
 			V_snprintf(action, sizeof(action), " for %i minutes", iDuration);
@@ -230,8 +175,6 @@ CON_COMMAND_CHAT_FLAGS(ban, "ban a player", ADMFLAG_BAN)
 		}
 
 		V_snprintf(jsonStr, sizeof(jsonStr), jsonTemplate9, playerName, commandPlayerName, action);
-
-		g_HTTPManager.POST(webHookUrl2, jsonStr, &HttpCallback2);
 }
 
 CON_COMMAND_CHAT_FLAGS(mute, "mutes a player", ADMFLAG_CHAT)
@@ -302,35 +245,12 @@ CON_COMMAND_CHAT_FLAGS(mute, "mutes a player", ADMFLAG_CHAT)
             V_snprintf(szAction, sizeof(szAction), " permanently"); // Format szAction for permanent mute
             PrintSingleAdminAction(pszCommandPlayerName, pTarget->GetPlayerName(), "muted", szAction);
         }
-
-        // Send Discord webhook message
-        char jsonStr[2048];
-        char playerName[128];
-        char commandPlayerName[128];
-        char action[64];
-        V_strncpy(playerName, pTarget->GetPlayerName(), sizeof(playerName));
-        V_strncpy(commandPlayerName, pszCommandPlayerName, sizeof(commandPlayerName));
-        V_strncpy(action, szAction, sizeof(action));
-        V_snprintf(jsonStr, sizeof(jsonStr), jsonTemplate10, playerName, commandPlayerName, action);
-        g_HTTPManager.POST(webHookUrl2, jsonStr, &HttpCallback2);
     }
 
     g_pAdminSystem->SaveInfractions();
 
     PrintMultiAdminAction(nType, pszCommandPlayerName, "muted", szAction);
 }
-
-
-const char* jsonTemplate5 = "{"
-    "\"username\": \"Server Admin\","
-    "\"avatar_url\": \"https://i.imgur.com/kACf2pm.png\","
-    "\"content\": \"Player action\","
-    "\"embeds\": [{"
-        "\"title\": \"Player Gagged\","
-        "\"description\": \"Player: %s\\nAdmin: %s\\nAction: Gagged%s\","
-        "\"color\": 16711680" // Red color
-    "}]"
-"}";
 
 CON_COMMAND_CHAT_FLAGS(gag, "gag a player", ADMFLAG_CHAT)
 {
@@ -402,17 +322,6 @@ CON_COMMAND_CHAT_FLAGS(gag, "gag a player", ADMFLAG_CHAT)
             V_snprintf(szAction, sizeof(szAction), " permanently"); // Format szAction for permanent gag
             PrintSingleAdminAction(pszCommandPlayerName, pTarget->GetPlayerName(), "gagged", szAction);
         }
-
-        // Send Discord webhook message
-        char jsonStr[2048];
-        char playerName[128];
-        char commandPlayerName[128];
-        char action[64];
-        V_strncpy(playerName, pTarget->GetPlayerName(), sizeof(playerName));
-        V_strncpy(commandPlayerName, pszCommandPlayerName, sizeof(commandPlayerName));
-        V_strncpy(action, szAction, sizeof(action));
-        V_snprintf(jsonStr, sizeof(jsonStr), jsonTemplate5, playerName, commandPlayerName, action);
-        g_HTTPManager.POST(webHookUrl2, jsonStr, &HttpCallback2);
     }
 
     g_pAdminSystem->SaveInfractions();
@@ -420,21 +329,6 @@ CON_COMMAND_CHAT_FLAGS(gag, "gag a player", ADMFLAG_CHAT)
     PrintMultiAdminAction(nType, pszCommandPlayerName, "gagged", szAction);
 }
 
-const char* jsonTemplate11 = R"({
-    "username": "CS2.1TAP.RO",
-    "avatar_url": "https://i.imgur.com/kACf2pm.png",
-    "content": "A player has been slapped on CS2.1TAP.RO",
-    "embeds": [
-        {
-            "author": {
-                "name": "%s",
-                "icon_url": "https://i.imgur.com/kACf2pm.png"
-            },
-            "description": "Player %s has been slapped by Admin %s.",
-            "color": 16711680
-        }
-    ]
-})";
 
 CON_COMMAND_CHAT_FLAGS(slap, "slap a player", ADMFLAG_SLAY)
 {
@@ -484,11 +378,6 @@ CON_COMMAND_CHAT_FLAGS(slap, "slap a player", ADMFLAG_SLAY)
 
 		if (nType < ETargetType::ALL)
 			PrintSingleAdminAction(pszCommandPlayerName, pTarget->GetPlayerName(), "slapped");
-
-	char jsonStr[2048];
-    snprintf(jsonStr, sizeof(jsonStr), jsonTemplate11, pTarget->GetPlayerName(), pTarget->GetPlayerName(), pszCommandPlayerName);
-
-    g_HTTPManager.POST(webHookUrl2, jsonStr, &HttpCallback2);
 	}
 	PrintMultiAdminAction(nType, pszCommandPlayerName, "slapped");
 }
@@ -663,10 +552,6 @@ CON_COMMAND_CHAT_FLAGS(slay, "slay a player", ADMFLAG_SLAY)
         if (nType < ETargetType::ALL)
             PrintSingleAdminAction(pszCommandPlayerName, pTarget->GetPlayerName(), "slayed");
 
-        char jsonStr[2048];
-        snprintf(jsonStr, sizeof(jsonStr), jsonTemplate2, pTarget->GetPlayerName(), pTarget->GetPlayerName(), pszCommandPlayerName);
-
-        g_HTTPManager.POST(webHookUrl2, jsonStr, &HttpCallback2);
     }
 
     PrintMultiAdminAction(nType, pszCommandPlayerName, "slayed");

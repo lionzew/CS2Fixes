@@ -153,39 +153,15 @@ GAME_EVENT_F(player_spawn)
 		if(!pZEPlayer)
 		return -1.0f;
 
-		if (pZEPlayer->IsAdminFlagSet(ADMFLAG_CUSTOM1))
+		if (pZEPlayer->IsAdminFlagSet(ADMFLAG_CUSTOM8)) // o
         {
-            pController->m_szClan("[HELPER]");
+            pController->m_szClan("[Server Admin]");
         }
-        else if (pZEPlayer->IsAdminFlagSet(ADMFLAG_CUSTOM2))
+		else if (pZEPlayer->IsAdminFlagSet(ADMFLAG_CUSTOM6)) // t
         {
-            pController->m_szClan("[ADMINISTRATOR]");
+            pController->m_szClan("[Project Manager]");
         }
-        else if (pZEPlayer->IsAdminFlagSet(ADMFLAG_CUSTOM3))
-        {
-            pController->m_szClan("[MODERATOR]");
-        }
-        else if (pZEPlayer->IsAdminFlagSet(ADMFLAG_CUSTOM4))
-        {
-            pController->m_szClan("[VETERAN]");
-        }
-        else if (pZEPlayer->IsAdminFlagSet(ADMFLAG_CUSTOM5))
-        {
-            pController->m_szClan("[MANAGER]");
-        }
-        else if (pZEPlayer->IsAdminFlagSet(ADMFLAG_CUSTOM6))
-        {
-            pController->m_szClan("[CO-OWNER]");
-        }
-		else if (pZEPlayer->IsAdminFlagSet(ADMFLAG_CUSTOM7))
-        {
-            pController->m_szClan("[TESTER]");
-        }
-		else if (pZEPlayer->IsAdminFlagSet(ADMFLAG_CUSTOM8))
-        {
-            pController->m_szClan("[SUPERVIZOR]");
-        }
-        else if (pZEPlayer->IsAdminFlagSet(ADMFLAG_CHEATS))
+        else if (pZEPlayer->IsAdminFlagSet(ADMFLAG_CHEATS)) // z
         {
             pController->m_szClan("[OWNER]");
         }
@@ -197,22 +173,6 @@ GAME_EVENT_F(player_spawn)
 	});
 }
 
-GAME_EVENT_F(player_hurt)
-{
-    CBasePlayerController *pController = (CBasePlayerController*)pEvent->GetPlayerController("userid");
-    ZEPlayer* pZEPlayer = g_playerManager->GetPlayer(pController->GetPlayerSlot());
-
-    CBasePlayerController* died = (CBasePlayerController*)pEvent->GetPlayerController("userid");
-    CBasePlayerController* killer = (CBasePlayerController*)pEvent->GetPlayerController("attacker");
-    ZEPlayer* pZEKiller = g_playerManager->GetPlayer(killer->GetPlayerSlot());  // Get the ZEPlayer object for the killer
-
-    uint16 health = pEvent->GetInt("dmg_health");
-
-    if (pZEKiller->IsAdminFlagSet(ADMFLAG_CONVARS))  // Check the flag on the killer
-    {
-        ClientPrint(killer, HUD_PRINTCENTER, "-\4%d ", health);
-    }
-}
 
 GAME_EVENT_F(player_death)
 {
