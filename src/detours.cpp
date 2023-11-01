@@ -205,7 +205,7 @@ void FASTCALL Detour_UTIL_SayText2Filter(
             V_snprintf(sBuffer, sizeof(sBuffer), " \1[\2OWNER\1]\14 %s: \2%s", param1, param2);
         }
         else {
-            V_snprintf(sBuffer, sizeof(sBuffer), "%s: %s", param1, param2);
+            V_snprintf(sBuffer, sizeof(sBuffer), "%s: \1%s", param1, param2);
         }
 
 		UTIL_SayTextFilter(filter, sBuffer, pEntity, eMessageType);
