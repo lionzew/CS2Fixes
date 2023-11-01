@@ -169,7 +169,7 @@ GAME_EVENT_F(player_spawn)
         {
             pController->m_szClan("[VIP]");
         }
-        else if (pZEPlayer->IsAdminFlagSet(ADMFLAG_CUSTOM79)) // t
+        else if (pZEPlayer->IsAdminFlagSet(ADMFLAG_CUSTOM9)) // t
         {
             pController->m_szClan("[Premium VIP]");
         }
