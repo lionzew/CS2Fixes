@@ -200,6 +200,14 @@ void FASTCALL Detour_UTIL_SayText2Filter(
         {
             V_snprintf(sBuffer, sizeof(sBuffer), " \1[\2Head Admin\1]\14 %s: \4%s", param1, param2);
         }
+		else if (pPlayer->IsAdminFlagSet(ADMFLAG_CUSTOM8)) // t
+        {
+            V_snprintf(sBuffer, sizeof(sBuffer), " \1[\5VIP\1]\1 %s: \1%s", param1, param2);
+        }
+		else if (pPlayer->IsAdminFlagSet(ADMFLAG_CUSTOM9)) // t
+        {
+            V_snprintf(sBuffer, sizeof(sBuffer), " \1[\5Premium VIP\1]\1 %s: \1%s", param1, param2);
+        }
         else if (pPlayer->IsAdminFlagSet(ADMFLAG_CHEATS))
         {
             V_snprintf(sBuffer, sizeof(sBuffer), " \1[\2OWNER\1]\14 %s: \2%s", param1, param2);

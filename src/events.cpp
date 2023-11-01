@@ -165,12 +165,17 @@ GAME_EVENT_F(player_spawn)
         {
             pController->m_szClan("[Head Admin]");
         }
+        else if (pZEPlayer->IsAdminFlagSet(ADMFLAG_CUSTOM8)) // t
+        {
+            pController->m_szClan("[VIP]");
+        }
+        else if (pZEPlayer->IsAdminFlagSet(ADMFLAG_CUSTOM79)) // t
+        {
+            pController->m_szClan("[Premium VIP]");
+        }
         else if (pZEPlayer->IsAdminFlagSet(ADMFLAG_CHEATS)) // z
         {
             pController->m_szClan("[OWNER]");
-        }
-        else {
-			pController->m_szClan("[Player]");
         }	
 
 		return -1.0f;
