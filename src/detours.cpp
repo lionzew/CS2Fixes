@@ -206,6 +206,16 @@ void FASTCALL Detour_UTIL_SayText2Filter(
 
 	     int iCommandPlayer = pEntity->GetPlayerSlot();
 
+	else {
+    const char* teamColor;
+    if (isPlayerCT(pController)) {  // Check if the player is CT
+        teamColor = "\3";  // Blue for CT
+    } else {
+        teamColor = "\4";  // Red for T
+    }
+    V_snprintf(sBuffer, sizeof(sBuffer), " %s[\4Player%s]\1 %s: \1%s", teamColor, teamColor, param1, param2);
+}
+
     ZEPlayer *pPlayer = g_playerManager->GetPlayer(iCommandPlayer);
 	
 		char sBuffer[256];
@@ -246,8 +256,14 @@ void FASTCALL Detour_UTIL_SayText2Filter(
             V_snprintf(sBuffer, sizeof(sBuffer), " \1[\2OWNER\1]\14 %s: \2%s", param1, param2);
         }
         else {
-            V_snprintf(sBuffer, sizeof(sBuffer), " \1[\4Player\1]\1 %s: \1%s", param1, param2);
-        }
+		const char* teamColor;
+		if (isPlayerCT(pController)) {  // Check if the player is CT
+			teamColor = "\3";  // Blue for CT
+		} else {
+			teamColor = "\4";  // Red for T
+		}
+		V_snprintf(sBuffer, sizeof(sBuffer), " %s[\4Player%s]\1 %s: \1%s", teamColor, teamColor, param1, param2);
+	}
     
     UTIL_SayTextFilter(filter, sBuffer, pEntity, eMessageType);
 
