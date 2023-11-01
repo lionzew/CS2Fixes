@@ -100,83 +100,6 @@ CON_COMMAND_F(c_reload_infractions, "Reload infractions file", FCVAR_SPONLY | FC
 }
 
 
-CON_COMMAND_CHAT_FLAGS(ban, "ban a player", ADMFLAG_BAN)
-{
-    if (args.ArgC() < 3)
-    {
-        ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "Usage: !ban <name> <duration/0 (permanent)>");
-        return;
-    }
-
-    int iCommandPlayer = player ? player->GetPlayerSlot() : -1;
-    int iNumClients = 0;
-    int pSlot[MAXPLAYERS];
-
-    if (g_playerManager->TargetPlayerString(iCommandPlayer, args[1], iNumClients, pSlot) != ETargetType::PLAYER || iNumClients > 1)
-    {
-        ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX"You can only target individual players for banning.");
-        return;
-    }
-
-    if (!iNumClients)
-    {
-        ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX"Target not found.");
-        return;
-    }
-
-    int iDuration = V_StringToInt32(args[2], -1);
-
-    if (iDuration == -1)
-    {
-        ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX"Invalid duration.");
-        return;
-    }
-    CCSPlayerController* pTarget = CCSPlayerController::FromSlot(pSlot[0]);
-
-    if (!pTarget)
-        return;
-
-    ZEPlayer* pTargetPlayer = g_playerManager->GetPlayer(pSlot[0]);
-
-    if (pTargetPlayer->IsFakeClient())
-        return;
-
-    CInfractionBase *infraction = new CBanInfraction(iDuration, pTargetPlayer->GetSteamId64());
-
-    g_pAdminSystem->AddInfraction(infraction);
-    infraction->ApplyInfraction(pTargetPlayer);
-    g_pAdminSystem->SaveInfractions();
-
-    const char *pszCommandPlayerName = player ? player->GetPlayerName() : "Console";
-
-    ClientPrintAll(HUD_PRINTTALK, CHAT_PREFIX ADMIN_PREFIX "banned %s for %i minutes.", pszCommandPlayerName, pTarget->GetPlayerName(), iDuration);
-
-    char szAction[64];
-    V_snprintf(szAction, sizeof(szAction), " for %i minutes", iDuration);
-
-    if (iDuration > 0)
-    {
-    	V_snprintf(szAction, sizeof(szAction), " for %i minutes", iDuration);
-    	PrintSingleAdminAction(pszCommandPlayerName, pTarget->GetPlayerName(), "banned", szAction);
-    }
-    else
-    {
-    	V_snprintf(szAction, sizeof(szAction), " permanently"); // Format szAction for permanent ban
-    	PrintSingleAdminAction(pszCommandPlayerName, pTarget->GetPlayerName(), "banned", szAction);
-    }
-
-		if (iDuration > 0)
-		{
-			V_snprintf(action, sizeof(action), " for %i minutes", iDuration);
-		}
-		else
-		{
-			V_strncpy(action, " permanently", sizeof(action));
-		}
-
-		V_snprintf(jsonStr, sizeof(jsonStr), jsonTemplate9, playerName, commandPlayerName, action);
-}
-
 CON_COMMAND_CHAT_FLAGS(mute, "mutes a player", ADMFLAG_CHAT)
 {
     if (args.ArgC() < 3)
@@ -481,42 +404,6 @@ CON_COMMAND_CHAT_FLAGS(ungag, "ungags a player", ADMFLAG_CHAT)
 	PrintMultiAdminAction(nType, pszCommandPlayerName, "ungagged");
 }
 
-CON_COMMAND_CHAT_FLAGS(kick, "kick a player", ADMFLAG_KICK)
-{
-	if (args.ArgC() < 2)
-	{
-		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "Usage: !kick <name>");
-		return;
-	}
-
-	int iCommandPlayer = player ? player->GetPlayerSlot() : -1;
-	int iNumClients = 0;
-	int pSlot[MAXPLAYERS];
-
-	g_playerManager->TargetPlayerString(iCommandPlayer, args[1], iNumClients, pSlot);
-
-	if (!iNumClients)
-	{
-		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX"Target not found.");
-		return;
-	}
-
-	const char *pszCommandPlayerName = player ? player->GetPlayerName() : "Console";
-
-	for (int i = 0; i < iNumClients; i++)
-	{
-		CCSPlayerController* pTarget = CCSPlayerController::FromSlot(pSlot[i]);
-
-		if (!pTarget)
-			continue;
-
-		ZEPlayer* pTargetPlayer = g_playerManager->GetPlayer(pSlot[i]);
-		
-		g_pEngineServer2->DisconnectClient(pTargetPlayer->GetPlayerSlot(), NETWORK_DISCONNECT_KICKED);
-
-		PrintSingleAdminAction(pszCommandPlayerName, pTarget->GetPlayerName(), "kicked");
-	}
-}
 
 CON_COMMAND_CHAT_FLAGS(slay, "slay a player", ADMFLAG_SLAY)
 {
