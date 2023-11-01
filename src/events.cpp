@@ -199,17 +199,19 @@ GAME_EVENT_F(player_spawn)
 
 GAME_EVENT_F(player_hurt)
 {
-	CBasePlayerController *pController = (CBasePlayerController*)pEvent->GetPlayerController("userid");
+    CBasePlayerController *pController = (CBasePlayerController*)pEvent->GetPlayerController("userid");
     ZEPlayer* pZEPlayer = g_playerManager->GetPlayer(pController->GetPlayerSlot());
 
-	CBasePlayerController* died = (CBasePlayerController*)pEvent->GetPlayerController("userid");
-	CBasePlayerController* killer = (CBasePlayerController*)pEvent->GetPlayerController("attacker");
-	uint16 health = pEvent->GetInt("dmg_health");
+    CBasePlayerController* died = (CBasePlayerController*)pEvent->GetPlayerController("userid");
+    CBasePlayerController* killer = (CBasePlayerController*)pEvent->GetPlayerController("attacker");
+    ZEPlayer* pZEKiller = g_playerManager->GetPlayer(killer->GetPlayerSlot());  // Get the ZEPlayer object for the killer
 
-	if (pZEPlayer->IsAdminFlagSet(ADMFLAG_CONVARS))
-	{
-		ClientPrint(killer, HUD_PRINTCENTER, "-\4%d ", health);
-	}
+    uint16 health = pEvent->GetInt("dmg_health");
+
+    if (pZEKiller->IsAdminFlagSet(ADMFLAG_CONVARS))  // Check the flag on the killer
+    {
+        ClientPrint(killer, HUD_PRINTCENTER, "-\4%d ", health);
+    }
 }
 
 GAME_EVENT_F(player_death)
