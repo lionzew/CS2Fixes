@@ -188,7 +188,7 @@ void FASTCALL Detour_UTIL_SayText2Filter(
     ZEPlayer *pPlayer = g_playerManager->GetPlayer(iCommandPlayer);
 	
 		char sBuffer[256];
-        if (pPlayer->IsAdminFlagSet(ADMFLAG_CUSTOM8)) // o
+        if (pPlayer->IsAdminFlagSet(ADMFLAG_CUSTOM1)) // o
         {
             V_snprintf(sBuffer, sizeof(sBuffer), " \1[\20Server Admin\1]\10 %s: \4%s", param1, param2);
         }
