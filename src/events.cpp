@@ -108,9 +108,10 @@ GAME_EVENT_F(round_start)
     new CTimer(60.0f, true, [useServerCommand]() mutable 
     {
         if (useServerCommand) {
-            g_pEngineServer2->ServerCommand("exec test ");
+            g_pEngineServer2->ServerCommand("exec AWP");
+            g_pEngineServer2->ServerCommand("say Now playing only AWP and Deagle! ");
         } else {
-            g_pEngineServer2->ServerCommand("echo test");
+            g_pEngineServer2->ServerCommand("exec ak47");
         }
 
         useServerCommand = !useServerCommand; 
