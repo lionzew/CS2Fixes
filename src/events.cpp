@@ -39,6 +39,14 @@ extern CEntitySystem *g_pEntitySystem;
 extern CGlobalVars *gpGlobals;
 extern IVEngineServer2* g_pEngineServer2;
 
+void changeCvar(const char* cvarName, const char* newValue) {
+    ConVar* cvar = g_pCVar->FindVar(cvarName);
+    if (cvar) {
+        cvar->SetValue(newValue);
+    } else {
+        Warning("Cvar %s not found\n", cvarName);
+    }
+
 CUtlVector<CGameEventListener *> g_vecEventListeners;
 
 void RegisterEventListeners()
