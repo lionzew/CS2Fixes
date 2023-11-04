@@ -385,19 +385,6 @@ const char* jsonTemplate7 = R"({
 		]
 	})";
 
-bool useServerCommand = true;
-
-new CTimer(60.0f, true, [useServerCommand]() mutable  // Repeat every 60 seconds
-{
-    if (useServerCommand) {
-        ServerCommand("print test");
-    } else {
-        ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "test");
-    }
-
-    useServerCommand = !useServerCommand;  // Toggle between ServerCommand and ClientPrint
-    return 60.0f;  // Repeat every 60 seconds
-});
 
 void HttpCallback3(HTTPRequestHandle request, char* response)
 {
