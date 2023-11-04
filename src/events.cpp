@@ -110,7 +110,7 @@ GAME_EVENT_F(round_end)
     
     g_pEngineServer2->ServerCommand("sv_cheats true");
     g_pEngineServer2->ServerCommand("ent_remove_all weapon_awp");
-     g_pEngineServer2->ServerCommand("ent_remove_all weapon_ak47");
+    g_pEngineServer2->ServerCommand("ent_remove_all weapon_ak47");
 	g_pEngineServer2->ServerCommand("ent_remove_all deagle");
 }
 
