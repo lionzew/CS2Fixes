@@ -99,25 +99,33 @@ GAME_EVENT_F(bomb_defused)
     g_iBombTimerCounter = 0;
 }
 
+CTimer* timer = nullptr;
+bool useServerCommand = true;
+
+
 GAME_EVENT_F(round_start)
 {
     g_iBombTimerCounter = 0;
 
-    bool useServerCommand = true;
+    // If the timer already exists, reset or restart it
+    if (timer) {
+        timer->Reset();
+    } else {
+        // If the timer doesn't exist, create it
+        timer = new CTimer(60.0f, true, [useServerCommand]() mutable 
+        {
+            if (useServerCommand) {
+                g_pEngineServer2->ServerCommand("exec AWP");
+                g_pEngineServer2->ServerCommand("say Now playing only AWP and Deagle! ");
+            } else {
+                g_pEngineServer2->ServerCommand("exec ak47");
+                g_pEngineServer2->ServerCommand("say Now playing only AK47 and Deagle! ");
+            }
 
-    new CTimer(60.0f, true, [useServerCommand]() mutable 
-    {
-        if (useServerCommand) {
-            g_pEngineServer2->ServerCommand("exec AWP");
-            g_pEngineServer2->ServerCommand("say Now playing only AWP and Deagle! ");
-        } else {
-            g_pEngineServer2->ServerCommand("exec ak47");
-            g_pEngineServer2->ServerCommand("say Now playing only AK47 and Deagle! ");
-        }
-
-        useServerCommand = !useServerCommand; 
-        return 60.0f; 
-    });
+            useServerCommand = !useServerCommand; 
+            return 60.0f; 
+        });
+    }
 }
 
 GAME_EVENT_F(round_end)
