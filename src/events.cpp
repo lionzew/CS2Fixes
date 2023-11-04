@@ -107,25 +107,25 @@ GAME_EVENT_F(round_start)
 {
     g_iBombTimerCounter = 0;
 
-    // If the timer already exists, reset or restart it
-    if (timer) {
-        timer->Reset();
-    } else {
-        // If the timer doesn't exist, create it
-        timer = new CTimer(60.0f, true, [useServerCommand]() mutable 
-        {
-            if (useServerCommand) {
-                g_pEngineServer2->ServerCommand("exec AWP");
-                g_pEngineServer2->ServerCommand("say Now playing only AWP and Deagle! ");
-            } else {
-                g_pEngineServer2->ServerCommand("exec ak47");
-                g_pEngineServer2->ServerCommand("say Now playing only AK47 and Deagle! ");
-            }
+    // Declare the command to execute as a global variable
+std::string commandToExecute = "exec AWP";
 
-            useServerCommand = !useServerCommand; 
-            return 60.0f; 
-        });
+// Create the timer when the game starts
+new CTimer(60.0f, true, []()  // Repeat every 60 seconds
+{
+    g_pEngineServer2->ServerCommand(commandToExecute.c_str());
+
+    // Toggle between the two commands
+    if (commandToExecute == "exec AWP") {
+        commandToExecute = "exec ak47";
+        g_pEngineServer2->ServerCommand("say Now playing only AK47 and Deagle! ");
+    } else {
+        commandToExecute = "exec AWP";
+        g_pEngineServer2->ServerCommand("say Now playing only AWP and Deagle! ");
     }
+
+    return 60.0f;  // Repeat every 60 seconds
+});
 }
 
 GAME_EVENT_F(round_end)
