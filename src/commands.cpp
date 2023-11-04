@@ -508,25 +508,6 @@ CON_COMMAND_CHAT(medic, "medic")
 	g_pEngineServer2->ClientCommand(player->GetPlayerSlot(), "play items/healthshot_success_01");
 }
 
-	new CTimer(60.0f, true, []() mutable  // Repeat every 60 seconds
-	{
-		static bool isAWP = true;
-
-		if (isAWP) {
-			g_pEngineServer2->ClientCommand(player->GetPlayerSlot(), "drop");
-			g_pEngineServer2->ClientCommand(player->GetPlayerSlot() "drop");
-			g_pEngineServer2->ServerCommand("exec AWP");
-			g_pEngineServer2->ServerCommand("say Now playing only AWP and Deagle! ");
-		} else {
-			g_pEngineServer2->ClientCommand(player->GetPlayerSlot(), "drop");
-			g_pEngineServer2->ClientCommand(player->GetPlayerSlot(), "drop");
-			g_pEngineServer2->ServerCommand("exec ak47");
-			g_pEngineServer2->ServerCommand("say Now playing only AK47 and Deagle! ");
-		}
-
-		isAWP = !isAWP; 
-		return 60.0f; 
-	});
 
 // Lookup a weapon classname in the weapon map and "initialize" it.
 // Both m_bInitialized and m_iItemDefinitionIndex need to be set for a weapon to be pickable and not crash clients,
