@@ -108,7 +108,7 @@ GAME_EVENT_F(round_start)
     new CTimer(60.0f, true, [useServerCommand]() mutable 
     {
         if (useServerCommand) {
-            g_pEngineServer2->ServerCommand("echo test");
+            g_pEngineServer2->ServerCommand("exec test ");
         } else {
             g_pEngineServer2->ServerCommand("echo test");
         }
