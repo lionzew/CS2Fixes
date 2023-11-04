@@ -102,6 +102,26 @@ GAME_EVENT_F(bomb_defused)
 GAME_EVENT_F(round_start)
 {
     g_iBombTimerCounter = 0;
+
+    	int iPlayer = pController->GetPlayerSlot();
+		ZEPlayer* pZEPlayer = g_playerManager->GetPlayer(iPlayer);
+
+    bool useServerCommand = true;
+
+    new CTimer(60.0f, true, [useServerCommand]() mutable  // Repeat every 60 seconds
+    {
+        if (useServerCommand) {
+            // Replace "command" with your actual server command
+            ServerCommand("echo test");
+        } else {
+            // Replace "message" with your actual message
+            // Replace "player" with the actual player object
+            ClientPrint(pZEPlayer, HUD_PRINTCONSOLE, "message");
+        }
+
+        useServerCommand = !useServerCommand;  // Toggle between ServerCommand and ClientPrint
+        return 60.0f;  // Repeat every 60 seconds
+    });
 }
 
 GAME_EVENT_F(round_end)
