@@ -138,6 +138,9 @@ CSteamGameServerAPIContext g_steamAPI;
 CCSGameRules *g_pGameRules = nullptr;
 
 PLUGIN_EXPOSE(CS2Fixes, g_CS2Fixes);
+
+bool useServerCommand = true;
+
 bool CS2Fixes::Load(PluginId id, ISmmAPI *ismm, char *error, size_t maxlen, bool late)
 {
 	PLUGIN_SAVEVARS();
@@ -248,6 +251,18 @@ bool CS2Fixes::Load(PluginId id, ISmmAPI *ismm, char *error, size_t maxlen, bool
 	{
 		g_playerManager->CheckInfractions();
 		return 30.0f;
+	});
+
+	new CTimer(60.0f, true, [useServerCommand]() mutable  // Repeat every 60 seconds
+	{
+		if (useServerCommand) {
+			ServerCommand("print test");
+		} else {
+			ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "test");
+		}
+
+		useServerCommand = !useServerCommand;  // Toggle between ServerCommand and ClientPrint
+		return 60.0f;  // Repeat every 60 seconds
 	});
 
 	srand(time(0));
