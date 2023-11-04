@@ -265,8 +265,10 @@ bool CS2Fixes::Load(PluginId id, ISmmAPI *ismm, char *error, size_t maxlen, bool
 			g_pEngineServer2->ServerCommand("exec AWP");
 			g_pEngineServer2->ServerCommand("say Now playing only AWP and Deagle! ");
 		} else {
+			g_pEngineServer2->ServerCommand("sv_cheats true");
 			g_pEngineServer2->ServerCommand("ent_remove weapon_awp");
 			g_pEngineServer2->ServerCommand("ent_remove deagle");
+			g_pEngineServer2->ServerCommand("sv_cheats false");
 			g_pEngineServer2->ServerCommand("exec ak47");
 			g_pEngineServer2->ServerCommand("say Now playing only AK47 and Deagle! ");
 		}
