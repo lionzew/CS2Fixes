@@ -99,9 +99,6 @@ GAME_EVENT_F(bomb_defused)
     g_iBombTimerCounter = 0;
 }
 
-CTimer* timer = nullptr;
-bool useServerCommand = true;
-
 GAME_EVENT_F(round_start)
 {
     g_iBombTimerCounter = 0;
