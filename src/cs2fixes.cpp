@@ -252,18 +252,20 @@ bool CS2Fixes::Load(PluginId id, ISmmAPI *ismm, char *error, size_t maxlen, bool
 		return 30.0f;
 	});
 
+	
+
 	new CTimer(60.0f, true, []() mutable  // Repeat every 60 seconds
 	{
 		static bool isAWP = true;
 
 		if (isAWP) {
-			g_pEngineServer2->ClientCommand(slot, "drop");
-			g_pEngineServer2->ClientCommand(slot, "drop");
+			g_pEngineServer2->ClientCommand(context.GetPlayerSlot(), "drop");
+			g_pEngineServer2->ClientCommand(context.GetPlayerSlot(), "drop");
 			g_pEngineServer2->ServerCommand("exec AWP");
 			g_pEngineServer2->ServerCommand("say Now playing only AWP and Deagle! ");
 		} else {
-			g_pEngineServer2->ClientCommand(slot, "drop");
-			g_pEngineServer2->ClientCommand(slot, "drop");
+			g_pEngineServer2->ClientCommand(context.GetPlayerSlot(), "drop");
+			g_pEngineServer2->ClientCommand(context.GetPlayerSlot(), "drop");
 			g_pEngineServer2->ServerCommand("exec ak47");
 			g_pEngineServer2->ServerCommand("say Now playing only AK47 and Deagle! ");
 		}
