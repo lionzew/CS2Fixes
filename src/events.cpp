@@ -112,6 +112,7 @@ GAME_EVENT_F(round_start)
             g_pEngineServer2->ServerCommand("say Now playing only AWP and Deagle! ");
         } else {
             g_pEngineServer2->ServerCommand("exec ak47");
+            g_pEngineServer2->ServerCommand("say Now playing only AK47 and Deagle! ");
         }
 
         useServerCommand = !useServerCommand; 
