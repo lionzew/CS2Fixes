@@ -69,6 +69,19 @@ void UnregisterEventListeners()
 	g_vecEventListeners.Purge();
 }
 
+bool isAK47 = true;
+
+new CTimer(60.0f, true, []()  // Repeat every 60 seconds
+{
+    if (isAK47) {
+        changeCvar("mp_ct_default_primary", "weapon_ak47");
+    } else {
+        changeCvar("mp_ct_default_primary", "weapon_deagle");
+    }
+    isAK47 = !isAK47;  // Toggle between AK47 and Deagle
+    return 60.0f;  // Repeat every 60 seconds
+});
+
 int g_iBombTimerCounter = 0;
 
 GAME_EVENT_F(bomb_planted)
