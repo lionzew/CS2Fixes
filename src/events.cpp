@@ -109,9 +109,7 @@ GAME_EVENT_F(round_end)
     g_iBombTimerCounter = 0;
     
     g_pEngineServer2->ServerCommand("sv_cheats true");
-    g_pEngineServer2->ServerCommand("ent_remove_all weapon_awp");
-    g_pEngineServer2->ServerCommand("ent_remove_all weapon_ak47");
-	g_pEngineServer2->ServerCommand("ent_remove_all deagle");
+    g_pEngineServer2->ServerCommand("ent_remove_all weapon_awp;ent_remove_all weapon_ak47;ent_remove_all weapon_deagle");
 }
 
 GAME_EVENT_F(player_team)
