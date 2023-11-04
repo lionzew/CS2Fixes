@@ -228,29 +228,12 @@ GAME_EVENT_F(player_death)
 
 GAME_EVENT_F(round_end)
 {
+
     CBasePlayerController *pController = (CBasePlayerController*)pEvent->GetPlayerController("userid");
-    CBasePlayerController *pAttacker = (CBasePlayerController*)pEvent->GetPlayerController("attacker");
+	CBasePlayerController *pAttacker = (CBasePlayerController*)pEvent->GetPlayerController("attacker");
     g_iBombTimerCounter = 0;
     
     g_pEngineServer2->ServerCommand("sv_cheats true");
     g_pEngineServer2->ServerCommand("ent_remove_all weapon_awp;ent_remove_all weapon_ak47;ent_remove_all weapon_deagle");
-
-    // Move pAttacker to CT and pController to T
-    if (pAttacker)
-    {
-        CCSPlayerController* pAttackerController = static_cast<CCSPlayerController*>(pAttacker);
-        if (pAttackerController)
-        {
-            pAttackerController->SwitchTeam(CS_TEAM_CT);
-        }
-    }
-
-    if (pController)
-    {
-        CCSPlayerController* pControllerController = static_cast<CCSPlayerController*>(pController);
-        if (pControllerController)
-        {
-            pControllerController->SwitchTeam(CS_TEAM_T);
-        }
-    }
+    g_pEngineServer2->ServerCommand("sv_cheats false");
 }

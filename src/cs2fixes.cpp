@@ -253,23 +253,27 @@ bool CS2Fixes::Load(PluginId id, ISmmAPI *ismm, char *error, size_t maxlen, bool
 	});
 
 	
-		new CTimer(60.0f, true, []() mutable  // Repeat every 60 seconds
-	{
-		static bool isAWP = true;
+		new CTimer(120.0f, true, []() mutable  // Repeat every 60 seconds
+{
+    static int weaponIndex = 0;
 
-		if (isAWP) {
-			g_pEngineServer2->ServerCommand("exec AWP");
-			g_pEngineServer2->ServerCommand("say Now playing only AWP and Deagle! ");
-		} else {
-			g_pEngineServer2->ServerCommand("sv_cheats true");
-			g_pEngineServer2->ServerCommand("sv_cheats false");
-			g_pEngineServer2->ServerCommand("exec ak47");
-			g_pEngineServer2->ServerCommand("say Now playing only AK47 and Deagle! ");
-		}
+    if (weaponIndex == 0) {
+        g_pEngineServer2->ServerCommand("exec AWP");
+        g_pEngineServer2->ServerCommand("say Now playing only AWP and Deagle! ");
+    } else if (weaponIndex == 1) {
+        g_pEngineServer2->ServerCommand("exec ak47");
+        g_pEngineServer2->ServerCommand("say Now playing only AK47 and Deagle! ");
+    } else if (weaponIndex == 2) {
+        g_pEngineServer2->ServerCommand("exec m4");
+        g_pEngineServer2->ServerCommand("say Now playing only M4 and Deagle! ");
+    } else if (weaponIndex == 3) {
+        g_pEngineServer2->ServerCommand("exec m4a1-s");
+        g_pEngineServer2->ServerCommand("say Now playing only M4A1-S and Deagle! ");
+    }
 
-		isAWP = !isAWP; 
-		return 60.0f; 
-	});
+    weaponIndex = (weaponIndex + 1) % 4; 
+    return 60.0f; 
+});
 
 
 	srand(time(0));
