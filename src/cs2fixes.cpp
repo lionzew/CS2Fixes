@@ -140,7 +140,7 @@ CCSGameRules *g_pGameRules = nullptr;
 PLUGIN_EXPOSE(CS2Fixes, g_CS2Fixes);
 
 
-bool CS2Fixes::Load(PluginId id, ISmmAPI *ismm, char *error, size_t maxlen, bool late, CPlayerSlot slot)
+bool CS2Fixes::Load(PluginId id, ISmmAPI *ismm, char *error, size_t maxlen, bool late)
 {
 	PLUGIN_SAVEVARS();
 
@@ -254,25 +254,6 @@ bool CS2Fixes::Load(PluginId id, ISmmAPI *ismm, char *error, size_t maxlen, bool
 
 	
 
-	new CTimer(60.0f, true, []() mutable  // Repeat every 60 seconds
-	{
-		static bool isAWP = true;
-
-		if (isAWP) {
-			g_pEngineServer2->ClientCommand(context.GetPlayerSlot(), "drop");
-			g_pEngineServer2->ClientCommand(context.GetPlayerSlot(), "drop");
-			g_pEngineServer2->ServerCommand("exec AWP");
-			g_pEngineServer2->ServerCommand("say Now playing only AWP and Deagle! ");
-		} else {
-			g_pEngineServer2->ClientCommand(context.GetPlayerSlot(), "drop");
-			g_pEngineServer2->ClientCommand(context.GetPlayerSlot(), "drop");
-			g_pEngineServer2->ServerCommand("exec ak47");
-			g_pEngineServer2->ServerCommand("say Now playing only AK47 and Deagle! ");
-		}
-
-		isAWP = !isAWP; 
-		return 60.0f; 
-	});
 
 
 	srand(time(0));
