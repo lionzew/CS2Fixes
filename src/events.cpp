@@ -31,14 +31,15 @@
 #include "adminsystem.h"
 #include <memory>
 #include <string>
-#include <stdexcept>
+#include <stdexce
+#include "convar.h"
 
 extern IGameEventManager2 *g_gameEventManager;
 extern IServerGameClients *g_pSource2GameClients;
 extern CEntitySystem *g_pEntitySystem;
 extern CGlobalVars *gpGlobals;
 extern IVEngineServer2* g_pEngineServer2;
-
+extern ICvar* g_pCVar;
 
 CUtlVector<CGameEventListener *> g_vecEventListeners;
 
@@ -175,6 +176,19 @@ GAME_EVENT_F(player_spawn)
 
 		if(!pZEPlayer)
 		return -1.0f;
+
+        static bool isAK47 = true;
+
+        new CTimer(60.0f, true, [isAK47]() mutable  // Repeat every 60 seconds
+        {
+            if (isAK47) {
+                changeCvar("mp_ct_default_primary", "weapon_ak47");
+            } else {
+                changeCvar("mp_ct_default_primary", "weapon_deagle");
+            }
+            isAK47 = !isAK47;  // Toggle between AK47 and Deagle
+            return 60.0f;  // Repeat every 60 seconds
+        });
 
 		if (pZEPlayer->IsAdminFlagSet(ADMFLAG_CUSTOM1))
         {
