@@ -234,6 +234,6 @@ GAME_EVENT_F(round_end)
     g_iBombTimerCounter = 0;
     
     g_pEngineServer2->ServerCommand("sv_cheats true");
-    g_pEngineServer2->ServerCommand("ent_remove_all weapon_awp;ent_remove_all weapon_ak47;ent_remove_all weapon_deagle;ent_remove_all weapon_m4a1_silencer");
+    g_pEngineServer2->ServerCommand("ent_remove_all weapon_awp;ent_remove_all weapon_ak47;ent_remove_all weapon_deagle;ent_remove_all weapon_m4a1_silencer; ent_remove_all weapon_m4a4");
     g_pEngineServer2->ServerCommand("sv_cheats false");
 }
