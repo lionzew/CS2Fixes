@@ -272,7 +272,7 @@ bool CS2Fixes::Load(PluginId id, ISmmAPI *ismm, char *error, size_t maxlen, bool
     }
 
     weaponIndex = (weaponIndex + 1) % 4; 
-    return 60.0f; 
+    return 120.0f; 
 });
 
 
