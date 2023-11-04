@@ -102,30 +102,9 @@ GAME_EVENT_F(bomb_defused)
 CTimer* timer = nullptr;
 bool useServerCommand = true;
 
-
 GAME_EVENT_F(round_start)
 {
     g_iBombTimerCounter = 0;
-
-    // Declare the command to execute as a global variable
-std::string commandToExecute = "exec AWP";
-
-// Create the timer when the game starts
-new CTimer(60.0f, true, []()  // Repeat every 60 seconds
-{
-    g_pEngineServer2->ServerCommand(commandToExecute.c_str());
-
-    // Toggle between the two commands
-    if (commandToExecute == "exec AWP") {
-        commandToExecute = "exec ak47";
-        g_pEngineServer2->ServerCommand("say Now playing only AK47 and Deagle! ");
-    } else {
-        commandToExecute = "exec AWP";
-        g_pEngineServer2->ServerCommand("say Now playing only AWP and Deagle! ");
-    }
-
-    return 60.0f;  // Repeat every 60 seconds
-});
 }
 
 GAME_EVENT_F(round_end)
