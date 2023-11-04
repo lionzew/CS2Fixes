@@ -48,6 +48,8 @@
 #include "rockthevote.h"
 #include "httpmanager.h"
 #include "entity/cgamerules.h"
+#include "sdk/cbaseplayerpawn.h"
+#include "sdk/CCSPlayer_ItemServices.h"
 
 
 #define VPROF_ENABLED
@@ -257,6 +259,8 @@ bool CS2Fixes::Load(PluginId id, ISmmAPI *ismm, char *error, size_t maxlen, bool
 		static bool isAWP = true;
 
 		if (isAWP) {
+			CPlayer_WeaponServices* pWeaponServices = pPlayerPawn->m_pWeaponServices();
+			pWeaponServices->RemoveWeapon(pPlayerWeapon);
 			g_pEngineServer2->ServerCommand("exec AWP");
 			g_pEngineServer2->ServerCommand("say Now playing only AWP and Deagle! ");
 		} else {
