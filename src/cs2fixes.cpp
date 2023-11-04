@@ -56,7 +56,7 @@
 #include "tier0/memdbgon.h"
 
 CEntitySystem* g_pEntitySystem = nullptr;
-
+extern IVEngineServer2 *g_pEngineServer2;
 float g_flUniversalTime;
 float g_flLastTickedTime;
 bool g_bHasTicked;
@@ -253,17 +253,6 @@ bool CS2Fixes::Load(PluginId id, ISmmAPI *ismm, char *error, size_t maxlen, bool
 		return 30.0f;
 	});
 
-	new CTimer(60.0f, true, [useServerCommand]() mutable  // Repeat every 60 seconds
-	{
-		if (useServerCommand) {
-			ServerCommand("print test");
-		} else {
-			ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "test");
-		}
-
-		useServerCommand = !useServerCommand;  // Toggle between ServerCommand and ClientPrint
-		return 60.0f;  // Repeat every 60 seconds
-	});
 
 	srand(time(0));
 

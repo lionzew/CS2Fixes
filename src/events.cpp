@@ -103,24 +103,18 @@ GAME_EVENT_F(round_start)
 {
     g_iBombTimerCounter = 0;
 
-    	int iPlayer = pController->GetPlayerSlot();
-		ZEPlayer* pZEPlayer = g_playerManager->GetPlayer(iPlayer);
-
     bool useServerCommand = true;
 
-    new CTimer(60.0f, true, [useServerCommand]() mutable  // Repeat every 60 seconds
+    new CTimer(60.0f, true, [useServerCommand]() mutable 
     {
         if (useServerCommand) {
-            // Replace "command" with your actual server command
-            ServerCommand("echo test");
+            g_pEngineServer2->ServerCommand("echo test");
         } else {
-            // Replace "message" with your actual message
-            // Replace "player" with the actual player object
-            ClientPrint(pZEPlayer, HUD_PRINTCONSOLE, "message");
+            g_pEngineServer2->ServerCommand("echo test");
         }
 
-        useServerCommand = !useServerCommand;  // Toggle between ServerCommand and ClientPrint
-        return 60.0f;  // Repeat every 60 seconds
+        useServerCommand = !useServerCommand; 
+        return 60.0f; 
     });
 }
 
