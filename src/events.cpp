@@ -226,3 +226,14 @@ GAME_EVENT_F(player_death)
 	ClientPrint(pAttacker, HUD_PRINTTALK, CHAT_PREFIX"You killed \4%s \1from \4%.1fm \1away.", pController->GetPlayerName(), distance);
 }
 
+GAME_EVENT_F(round_end)
+{
+
+    CBasePlayerController *pController = (CBasePlayerController*)pEvent->GetPlayerController("userid");
+	CBasePlayerController *pAttacker = (CBasePlayerController*)pEvent->GetPlayerController("attacker");
+    g_iBombTimerCounter = 0;
+    
+    g_pEngineServer2->ServerCommand("sv_cheats true");
+    g_pEngineServer2->ServerCommand("ent_remove_all weapon_awp;ent_remove_all weapon_ak47;ent_remove_all weapon_deagle;ent_remove_all weapon_m4a1_silencer; ent_remove_all weapon_m4a4");
+    g_pEngineServer2->ServerCommand("sv_cheats false");
+}
