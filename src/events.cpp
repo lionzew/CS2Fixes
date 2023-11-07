@@ -232,8 +232,5 @@ GAME_EVENT_F(round_end)
     CBasePlayerController *pController = (CBasePlayerController*)pEvent->GetPlayerController("userid");
 	CBasePlayerController *pAttacker = (CBasePlayerController*)pEvent->GetPlayerController("attacker");
     g_iBombTimerCounter = 0;
-    
-    g_pEngineServer2->ServerCommand("sv_cheats true");
-    g_pEngineServer2->ServerCommand("ent_remove_all weapon_awp;ent_remove_all weapon_ak47;ent_remove_all weapon_deagle;ent_remove_all weapon_m4a1; ent_remove_all weapon_m4a4");
-    g_pEngineServer2->ServerCommand("sv_cheats false");
+
 }
