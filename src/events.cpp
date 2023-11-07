@@ -229,8 +229,6 @@ GAME_EVENT_F(player_death)
 GAME_EVENT_F(round_end)
 {
 
-    CBasePlayerController *pController = (CBasePlayerController*)pEvent->GetPlayerController("userid");
-	CBasePlayerController *pAttacker = (CBasePlayerController*)pEvent->GetPlayerController("attacker");
     g_iBombTimerCounter = 0;
 
 }
