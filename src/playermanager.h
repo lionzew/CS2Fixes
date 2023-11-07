@@ -132,9 +132,12 @@ public:
 
 	ZEPlayer *GetPlayer(CPlayerSlot slot);
 
-	
 
 	void ResetPlayerFlags(int slot);
 
+
+private:
+	ZEPlayer *m_vecPlayers[MAXPLAYERS];
+};
+
 extern CPlayerManager *g_playerManager;
-}
