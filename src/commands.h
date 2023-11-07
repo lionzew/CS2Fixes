@@ -64,14 +64,6 @@ private:
 	uint64 m_nFlags;
 };
 
-struct WeaponMapEntry_t
-{
-	const char *command;
-	const char *szWeaponName;
-	int iPrice;
-	uint16 iItemDefIndex;
-	int maxAmount = 0;
-};
 
 void ParseChatCommand(const char *, CCSPlayerController *);
 

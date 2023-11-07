@@ -353,10 +353,6 @@ bool InitDetours(CGameConfig *gameConfig)
 		success = false;
 	CSoundEmitterSystem_EmitSound.EnableDetour();
 
-	if (!CCSWeaponBase_Spawn.CreateDetour(gameConfig))
-		success = false;
-	CCSWeaponBase_Spawn.EnableDetour();
-
 	if (!TriggerPush_Touch.CreateDetour(gameConfig))
 		success = false;
 	TriggerPush_Touch.EnableDetour();
