@@ -130,18 +130,6 @@ void FASTCALL Detour_TriggerPush_Touch(CTriggerPush* pPush, Z_CBaseEntity* pOthe
 	pOther->m_fFlags(flags);
 }
 
-void FASTCALL Detour_CCSWeaponBase_Spawn(CBaseEntity *pThis, void *a2)
-{
-	const char *pszClassName = pThis->m_pEntity->m_designerName.String();
-
-#ifdef _DEBUG
-	Message("Weapon spawn: %s\n", pszClassName);
-#endif
-
-	CCSWeaponBase_Spawn(pThis, a2);
-
-	FixWeapon((CCSWeaponBase *)pThis);
-}
 
 void FASTCALL Detour_CSoundEmitterSystem_EmitSound(ISoundEmitterSystemBase *pSoundEmitterSystem, CEntityIndex *a2, IRecipientFilter &filter, uint32 a4, void *a5)
 {
