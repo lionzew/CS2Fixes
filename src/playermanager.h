@@ -114,9 +114,6 @@ public:
 	CPlayerManager(bool late = false)
 	{
 		V_memset(m_vecPlayers, 0, sizeof(m_vecPlayers));
-		m_nUsingStopSound = 0;
-		m_nUsingSilenceSound = 0; // On by default
-		m_nUsingStopDecals = -1; // On by default
 
 		if (late)
 			OnLateLoad();
@@ -135,26 +132,9 @@ public:
 
 	ZEPlayer *GetPlayer(CPlayerSlot slot);
 
-	uint64 GetStopSoundMask() { return m_nUsingStopSound; }
-	uint64 GetSilenceSoundMask() { return m_nUsingSilenceSound; }
-	uint64 GetStopDecalsMask() { return m_nUsingStopDecals; }
 	
-	void SetPlayerStopSound(int slot, bool set);
-	void SetPlayerSilenceSound(int slot, bool set);
-	void SetPlayerStopDecals(int slot, bool set);
 
 	void ResetPlayerFlags(int slot);
 
-	bool IsPlayerUsingStopSound(int slot) { return m_nUsingStopSound & ((uint64)1 << slot); }
-	bool IsPlayerUsingSilenceSound(int slot) { return m_nUsingSilenceSound & ((uint64)1 << slot); }
-	bool IsPlayerUsingStopDecals(int slot) { return m_nUsingStopDecals & ((uint64)1 << slot); }
-
-private:
-	ZEPlayer *m_vecPlayers[MAXPLAYERS];
-
-	uint64 m_nUsingStopSound;
-	uint64 m_nUsingSilenceSound;
-	uint64 m_nUsingStopDecals;
-};
-
 extern CPlayerManager *g_playerManager;
+}
