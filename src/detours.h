@@ -42,6 +42,7 @@ void FASTCALL Detour_Host_Say(CCSPlayerController *, CCommand &, bool, int, cons
 bool FASTCALL Detour_IsHearingClient(void*, int);
 void FASTCALL Detour_CSoundEmitterSystem_EmitSound(ISoundEmitterSystemBase *, CEntityIndex *, IRecipientFilter &, uint32, void *);
 //void FASTCALL Detour_CBaseEntity_Spawn(CBaseEntity *, void *);
+void FASTCALL Detour_CCSWeaponBase_Spawn(CBaseEntity *, void *);
 void FASTCALL Detour_TriggerPush_Touch(CTriggerPush* pPush, Z_CBaseEntity* pOther);
 void FASTCALL Detour_CGameRules_Constructor(CGameRules *pThis);
 

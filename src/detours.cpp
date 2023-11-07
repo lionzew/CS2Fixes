@@ -29,6 +29,7 @@
 #include "entity/ccsplayercontroller.h"
 #include "entity/ccsplayerpawn.h"
 #include "entity/cbasemodelentity.h"
+#include "entity/ccsweaponbase.h"
 #include "entity/ctriggerpush.h"
 #include "entity/cgamerules.h"
 #include "playermanager.h"
@@ -51,6 +52,7 @@ DECLARE_DETOUR(UTIL_SayTextFilter, Detour_UTIL_SayTextFilter);
 DECLARE_DETOUR(UTIL_SayText2Filter, Detour_UTIL_SayText2Filter);
 DECLARE_DETOUR(IsHearingClient, Detour_IsHearingClient);
 DECLARE_DETOUR(CSoundEmitterSystem_EmitSound, Detour_CSoundEmitterSystem_EmitSound);
+DECLARE_DETOUR(CCSWeaponBase_Spawn, Detour_CCSWeaponBase_Spawn);
 DECLARE_DETOUR(TriggerPush_Touch, Detour_TriggerPush_Touch);
 DECLARE_DETOUR(CGameRules_Constructor, Detour_CGameRules_Constructor);
 
@@ -128,6 +130,18 @@ void FASTCALL Detour_TriggerPush_Touch(CTriggerPush* pPush, Z_CBaseEntity* pOthe
 	pOther->m_fFlags(flags);
 }
 
+void FASTCALL Detour_CCSWeaponBase_Spawn(CBaseEntity *pThis, void *a2)
+{
+	const char *pszClassName = pThis->m_pEntity->m_designerName.String();
+
+#ifdef _DEBUG
+	Message("Weapon spawn: %s\n", pszClassName);
+#endif
+
+	CCSWeaponBase_Spawn(pThis, a2);
+
+	FixWeapon((CCSWeaponBase *)pThis);
+}
 
 void FASTCALL Detour_CSoundEmitterSystem_EmitSound(ISoundEmitterSystemBase *pSoundEmitterSystem, CEntityIndex *a2, IRecipientFilter &filter, uint32 a4, void *a5)
 {
@@ -350,6 +364,10 @@ bool InitDetours(CGameConfig *gameConfig)
 	if (!CSoundEmitterSystem_EmitSound.CreateDetour(gameConfig))
 		success = false;
 	CSoundEmitterSystem_EmitSound.EnableDetour();
+
+	if (!CCSWeaponBase_Spawn.CreateDetour(gameConfig))
+		success = false;
+	CCSWeaponBase_Spawn.EnableDetour();
 
 	if (!TriggerPush_Touch.CreateDetour(gameConfig))
 		success = false;

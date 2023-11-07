@@ -339,7 +339,33 @@ ZEPlayer *CPlayerManager::GetPlayerFromUserId(uint16 userid)
 	return m_vecPlayers[index];
 }
 
+void CPlayerManager::SetPlayerStopSound(int slot, bool set)
+{
+	if (set)
+		m_nUsingStopSound |= ((uint64)1 << slot);
+	else
+		m_nUsingStopSound &= ~((uint64)1 << slot);
+}
+
+void CPlayerManager::SetPlayerSilenceSound(int slot, bool set)
+{
+	if (set)
+		m_nUsingSilenceSound |= ((uint64)1 << slot);
+	else
+		m_nUsingSilenceSound &= ~((uint64)1 << slot);
+}
+
+void CPlayerManager::SetPlayerStopDecals(int slot, bool set)
+{
+	if (set)
+		m_nUsingStopDecals |= ((uint64)1 << slot);
+	else
+		m_nUsingStopDecals &= ~((uint64)1 << slot);
+}
 
 void CPlayerManager::ResetPlayerFlags(int slot)
 {
+	SetPlayerStopSound(slot, false);
+	SetPlayerSilenceSound(slot, false);
+	SetPlayerStopDecals(slot, true);
 }
