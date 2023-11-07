@@ -24,7 +24,6 @@
 #include "commands.h"
 #include "utils/entity.h"
 #include "entity/cbaseentity.h"
-#include "entity/ccsweaponbase.h"
 #include "entity/ccsplayercontroller.h"
 #include "entity/ccsplayerpawn.h"
 #include "entity/cbasemodelentity.h"

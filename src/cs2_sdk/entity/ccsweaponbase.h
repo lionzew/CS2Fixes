@@ -46,8 +46,3 @@ public:
 	SCHEMA_FIELD(CAttributeContainer, m_AttributeManager)
 };
 
-class CCSWeaponBase : public CEconEntity
-{
-public:
-	DECLARE_SCHEMA_CLASS(CCSWeaponBase)
-};
