@@ -564,6 +564,77 @@ CON_COMMAND_CHAT_FLAGS(hsay, "say something as a hud hint", ADMFLAG_CHAT)
 	ClientPrintAll(HUD_PRINTCENTER, "%s", args.ArgS());
 }
 
+bool caseInsensitiveStringCompare( const std::string& str1, const std::string& str2 ) {
+    std::string str1Cpy( str1 );
+    std::string str2Cpy( str2 );
+    std::transform( str1Cpy.begin(), str1Cpy.end(), str1Cpy.begin(), ::tolower );
+    std::transform( str2Cpy.begin(), str2Cpy.end(), str2Cpy.begin(), ::tolower );
+    return ( str1Cpy == str2Cpy );
+}
+CON_COMMAND_CHAT_FLAGS(move, "set a player's team", ADMFLAG_SLAY)
+{
+	if (args.ArgC() < 3)
+	{
+		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "Usage: !move <name> <team (ct,t,spec)>");
+		return;
+	}
+
+	int iTeam = -1;
+	//int iTeam = V_StringToInt32(args[2], -1);
+	if ( caseInsensitiveStringCompare(args[2], "T" )) {
+   iTeam = 2;
+  
+} else if ( caseInsensitiveStringCompare(args[2], "CT" )) {
+   iTeam = 3;
+   
+} else if ( caseInsensitiveStringCompare(args[2], "SPEC" )) {
+   iTeam = 1;
+   //strcpy(cTeam, "SPEC");
+}
+
+	int iCommandPlayer = player ? player->GetPlayerSlot() : -1;
+	int iNumClients = 0;
+	int pSlots[MAXPLAYERS];
+
+	ETargetType nType = g_playerManager->TargetPlayerString(iCommandPlayer, args[1], iNumClients, pSlots);
+
+	if (!iNumClients)
+	{
+		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "Target not found.");
+		return;
+	}
+
+
+	if (iTeam < CS_TEAM_NONE || iTeam > CS_TEAM_CT)
+	{
+		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "Invalid team specified, use spec, t, ct.");
+		return;
+	}
+
+	const char *pszCommandPlayerName = player ? player->GetPlayerName() : "Console";
+
+	constexpr const char *teams[] = {"none", "spectators", "terrorists", "counter-terrorists"};
+
+	char szAction[64];
+	V_snprintf(szAction, sizeof(szAction), " to %s", teams[iTeam]);
+
+	for (int i = 0; i < iNumClients; i++)
+	{
+		CCSPlayerController* pTarget = CCSPlayerController::FromSlot(pSlots[i]);
+
+		if (!pTarget)
+			continue;
+
+		pTarget->SwitchTeam(iTeam);
+
+		if (nType < ETargetType::ALL)
+			PrintSingleAdminAction(pszCommandPlayerName, pTarget->GetPlayerName(), "moved", szAction);
+		pTarget->GetPawn()->CommitSuicide(false, true);
+	}
+
+	PrintMultiAdminAction(nType, pszCommandPlayerName, "moved", szAction);
+}
+
 CON_COMMAND_CHAT_FLAGS(rcon, "send a command to server console", ADMFLAG_RCON)
 {
 	if (!player)
