@@ -300,10 +300,6 @@ bool InitDetours(CGameConfig *gameConfig)
 		success = false;
 	UTIL_SayText2Filter.EnableDetour();
 
-	if (!Host_Say.CreateDetour(gameConfig))
-		success = false;
-	Host_Say.EnableDetour();
-
 	if (!IsHearingClient.CreateDetour(gameConfig))
 		success = false;
 	IsHearingClient.EnableDetour();
@@ -323,6 +319,10 @@ bool InitDetours(CGameConfig *gameConfig)
 	if (!CGameRules_Constructor.CreateDetour(gameConfig))
 		success = false;
 	CGameRules_Constructor.EnableDetour();
+
+	if (!CBaseEntity_TakeDamageOld.CreateDetour(gameConfig))
+		success = false;
+	CBaseEntity_TakeDamageOld.EnableDetour();
 
 	return success;
 }
