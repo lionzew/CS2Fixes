@@ -320,9 +320,7 @@ bool InitDetours(CGameConfig *gameConfig)
 		success = false;
 	CGameRules_Constructor.EnableDetour();
 
-	if (!CBaseEntity_TakeDamageOld.CreateDetour(gameConfig))
-		success = false;
-	CBaseEntity_TakeDamageOld.EnableDetour();
+
 
 	return success;
 }
