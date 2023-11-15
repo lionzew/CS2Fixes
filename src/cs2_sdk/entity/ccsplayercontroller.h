@@ -33,6 +33,10 @@ public:
 	SCHEMA_FIELD(CCSPlayerController_InGameMoneyServices*, m_pInGameMoneyServices)
 	SCHEMA_FIELD(CCSPlayerController_ActionTrackingServices*, m_pActionTrackingServices)
 	SCHEMA_FIELD(bool, m_bPawnIsAlive);
+	SCHEMA_FIELD(int, m_iScore)
+	SCHEMA_FIELD(int, m_iMVPs)
+	SCHEMA_FIELD(CUtlSymbolLarge, m_szClan);
+
 
 	static CCSPlayerController* FromPawn(CCSPlayerPawn* pawn) {
 		return (CCSPlayerController*)pawn->m_hController().Get();

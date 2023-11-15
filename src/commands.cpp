@@ -42,6 +42,7 @@ using json = nlohmann::json;
 extern CEntitySystem *g_pEntitySystem;
 extern IVEngineServer2* g_pEngineServer2;
 extern ISteamHTTP* g_http;
+extern CGlobalVars *gpGlobals;
 
 WeaponMapEntry_t WeaponMap[] = {
 	{"bizon",		  "weapon_bizon",			 1400, 26},
@@ -212,419 +213,248 @@ void ClientPrint(CBasePlayerController *player, int hud_dest, const char *msg, .
 		ConMsg("%s\n", buf);
 }
 
-CON_COMMAND_CHAT(stopsound, "toggle weapon sounds")
+CON_COMMAND_CHAT(vipinfo, "vip info")
 {
 	if (!player)
 		return;
 
-	int iPlayer = player->GetPlayerSlot();
-	bool bStopSet = g_playerManager->IsPlayerUsingStopSound(iPlayer);
-	bool bSilencedSet = g_playerManager->IsPlayerUsingSilenceSound(iPlayer);
-
-	g_playerManager->SetPlayerStopSound(iPlayer, bSilencedSet);
-	g_playerManager->SetPlayerSilenceSound(iPlayer, !bSilencedSet && !bStopSet);
-
-	ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "You have %s weapon sounds.", bSilencedSet ? "disabled" : !bSilencedSet && !bStopSet ? "silenced" : "enabled");
+	ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX"\1Starting health: \4 100-115.");
+	ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX"\1Starting armor: \4 110-120.");
+	ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX"\1Money add every round: \4 1000-3000.");
+	ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX"\1Starting with: \4 defeuser, he, smoke, molotov, flashbang.");
+	ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX"\1Smoke color: \4 green.");
+	ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX"\1For buying VIP, join our discord: \4 discord.gg/1tap.");
 }
 
-CON_COMMAND_CHAT(toggledecals, "toggle world decals, if you're into having 10 fps in ZE")
+// make a command that prints test
+
+CON_COMMAND_CHAT(vip, "vip info")
 {
 	if (!player)
 		return;
 
-	int iPlayer = player->GetPlayerSlot();
-	bool bSet = !g_playerManager->IsPlayerUsingStopDecals(iPlayer);
-
-	g_playerManager->SetPlayerStopDecals(iPlayer, bSet);
-
-	ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "You have %s world decals.", bSet ? "disabled" : "enabled");
+	ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX"\1Starting health: \4 100-115.");
+	ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX"\1Starting armor: \4 110-120.");
+	ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX"\1Money add every round: \4 1000-3000.");
+	ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX"\1Starting with: \4 defeuser, he, smoke, molotov, flashbang.");
+	ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX"\1Smoke color: \4 green.");
+	ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX"\1For buying VIP, join our discord: \4 discord.gg/1tap.");
 }
 
-CON_COMMAND_CHAT(myuid, "test")
+CON_COMMAND_CHAT(rs, "reset your score")
 {
 	if (!player)
 		return;
 
-	int iPlayer = player->GetPlayerSlot();
+	player->m_pActionTrackingServices->m_matchStats().m_iKills = 0;
+	player->m_pActionTrackingServices->m_matchStats().m_iDeaths = 0;
+	player->m_pActionTrackingServices->m_matchStats().m_iAssists = 0;
+	player->m_pActionTrackingServices->m_matchStats().m_iDamage = 0;
+	player->m_iScore = 0;
+	player->m_iMVPs = 0;
 
-	ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "Your userid is %i, slot: %i, retrieved slot: %i", g_pEngineServer2->GetPlayerUserId(iPlayer).Get(), iPlayer, g_playerManager->GetSlotFromUserId(g_pEngineServer2->GetPlayerUserId(iPlayer).Get()));
+	ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX"You successfully reset your score.");
 }
 
-// CONVAR_TODO
-static constexpr float g_flMaxZteleDistance = 150.0f;
-static constexpr bool g_bZteleHuman = false;
-
-CON_COMMAND_CHAT(ztele, "teleport to spawn")
+CON_COMMAND_CHAT(ws, "reset your score")
 {
 	if (!player)
-	{
-		ClientPrint(player, HUD_PRINTCONSOLE, CHAT_PREFIX "You cannot use this command from the server console.");
-		return;
-	}
-
-	// Check if command is enabled for humans
-	if (!g_bZteleHuman && player->m_iTeamNum() == CS_TEAM_CT)
-	{
-		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "You cannot use this command as a human.");
-		return;
-	}
-
-	//Count spawnpoints (info_player_counterterrorist & info_player_terrorist)
-	SpawnPoint* spawn = nullptr;
-	CUtlVector<SpawnPoint*> spawns;
-	while (nullptr != (spawn = (SpawnPoint*)UTIL_FindEntityByClassname(spawn, "info_player_*")))
-	{
-		if (spawn->m_bEnabled())
-			spawns.AddToTail(spawn);
-	}
-
-	// Let's be real here, this should NEVER happen
-	// But I ran into this when I switched to the real FindEntityByClassname and forgot to insert a *
-	if (spawns.Count() == 0)
-	{
-		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX"There are no spawns!");
-		Panic("ztele used while there are no spawns!\n");
-		return;
-	}
-
-	//Pick and get position of random spawnpoint
-	int randomindex = rand() % spawns.Count();
-	Vector spawnpos = spawns[randomindex]->GetAbsOrigin();
-
-	//Here's where the mess starts
-	CBasePlayerPawn* pPawn = player->GetPawn();
-
-	if (!pPawn)
 		return;
 
-	if (!pPawn->IsAlive())
-	{
-		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX"You cannot teleport when dead!");
-		return;
-	}
 
-	//Get initial player position so we can do distance check
-	Vector initialpos = pPawn->GetAbsOrigin();
-
-	ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX"Teleporting to spawn in 5 seconds.");
-
-	CHandle<CBasePlayerPawn> handle = pPawn->GetHandle();
-
-	new CTimer(5.0f, false, [spawnpos, handle, initialpos]()
-	{
-		CBasePlayerPawn *pPawn = handle.Get();
-
-		if (!pPawn)
-			return -1.0f;
-
-		Vector endpos = pPawn->GetAbsOrigin();
-
-		if (initialpos.DistTo(endpos) < g_flMaxZteleDistance)
-		{
-			pPawn->SetAbsOrigin(spawnpos);
-			ClientPrint(pPawn->GetController(), HUD_PRINTTALK, CHAT_PREFIX "You have been teleported to spawn.");
-		}
-		else
-		{
-			ClientPrint(pPawn->GetController(), HUD_PRINTTALK, CHAT_PREFIX "Teleport failed! You moved too far.");
-			return -1.0f;
-		}
-		
-		return -1.0f;
-	});
+	ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX"-------------------------------------------------");
+	ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX" \x01 Foloseste comanda \x06skin <skin_id> \x01in CONSOLA!");
+	ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX" \x01 Pentru a gasi \x06skin_id \x01poti folosi site-ul \x06 csgostash.com !");
+	ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX" \x01 Mai multe detalii pe \x06 discord.gg/1tap!");
+	ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX"-------------------------------------------------");
 }
 
-// CONVAR_TODO
-static constexpr int g_iDefaultHideDistance = 250;
-static constexpr int g_iMaxHideDistance = 2000;
-
-CON_COMMAND_CHAT(hide, "hides nearby teammates")
+CON_COMMAND_CHAT(knife, "reset your score")
 {
 	if (!player)
+		return;
+
+
+	ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX"-------------------------------------------------");
+	ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX" \x01 Foloseste comanda \x06knife <nume> \x01in CONSOLA!");
+	ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX" \x01 Variantele de nume acceptate sunt \x06karambit, bayonet, css, m9, bowie, butterfly, flip, push, huntsman, falchion, gut, ursus, navaja, stiletto, talon, paracord, survival, nomad !");
+	ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX" \x01 Mai multe detalii pe \x06 discord.gg/1tap!");
+	ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX"-------------------------------------------------");
+}
+
+
+CON_COMMAND_CHAT(who, "get list of all admin players online")
+{
+    if (!player)
+        return;
+
+	int iCommandPlayer = player->GetPlayerSlot();
+
+	ZEPlayer* pPlayer1 = g_playerManager->GetPlayer(iCommandPlayer);
+
+
+	if (!pPlayer1->IsAdminFlagSet(ADMFLAG_CHEATS))
 	{
-		ClientPrint(player, HUD_PRINTCONSOLE, CHAT_PREFIX "You cannot use this command from the server console.");
+		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX"You don't have access to this command.");
 		return;
 	}
 
-	int distance;
+    const char* pszFlagNames[] = {
+        "ADMFLAG_CUSTOM1",
+        "ADMFLAG_CUSTOM2",
+        "ADMFLAG_CUSTOM3",
+        "ADMFLAG_CUSTOM4",
+        "ADMFLAG_CUSTOM5",
+        "ADMFLAG_CUSTOM6",
+        "ADMFLAG_CUSTOM7",
+        "ADMFLAG_CUSTOM8"
+    };
 
-	if (args.ArgC() < 2)
-		distance = g_iDefaultHideDistance;
-	else
-		distance = V_StringToInt32(args[1], -1);
+    const char* pszCustomNames[] = {
+        "Helper",
+        "Administrator",
+        "Moderator",
+        "Veteran",
+		"Manager",
+		"Co-Owner",
+		"Tester",
+		"Supervizor",
+    };
 
-	if (distance > g_iMaxHideDistance || distance < 0)
-	{
-		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "You can only hide players between 0 and %i units away.", g_iMaxHideDistance);
+    const int iNumFlags = sizeof(pszFlagNames) / sizeof(pszFlagNames[0]);
+
+    uint64_t uiFlagValues[] = {
+        ADMFLAG_CUSTOM1,
+        ADMFLAG_CUSTOM2,
+        ADMFLAG_CUSTOM3,
+        ADMFLAG_CUSTOM4,
+        ADMFLAG_CUSTOM5,
+        ADMFLAG_CUSTOM6,
+        ADMFLAG_CUSTOM7,
+        ADMFLAG_CUSTOM8,
+        ADMFLAG_CUSTOM9
+    };
+
+    for (int i = 1; i <= gpGlobals->maxClients; i++)
+    {
+        CBasePlayerController* cPlayer = (CBasePlayerController*)g_pEntitySystem->GetBaseEntity((CEntityIndex)i);
+        if (!cPlayer)
+            continue;
+
+        ZEPlayer* pPlayer = g_playerManager->GetPlayer(i - 1);
+        if (!pPlayer)
+            continue;
+
+        std::string sAdminFlags = "";
+        for (int j = 0; j < iNumFlags; j++)
+        {
+            if (pPlayer->IsAdminFlagSet(uiFlagValues[j]))
+            {
+                if (j < 4)
+                {
+                    sAdminFlags += pszCustomNames[j];
+                }
+                else
+                {
+                    sAdminFlags += pszFlagNames[j];
+                }
+                sAdminFlags += " ";
+            }
+        }
+
+        if (sAdminFlags.empty())
+            continue;
+
+        ClientPrint(player, HUD_PRINTCONSOLE, CHAT_PREFIX "Player %s has admin flags: %s", cPlayer->GetPlayerName(), sAdminFlags.c_str());
+    }
+}
+
+CON_COMMAND_CHAT(a, "admins chat")
+{
+    if (!player)
+        return;
+
+    int iCommandPlayer = player->GetPlayerSlot();
+
+    ZEPlayer *pPlayer = g_playerManager->GetPlayer(iCommandPlayer);
+    if (args.ArgC() < 2)
+    {
+        
+        ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "Usage: /a <message> to admins");
+        return;
+    }
+
+for (int i = 0; i < MAXPLAYERS; i++)
+{
+    ZEPlayer* pAdmin = g_playerManager->GetPlayer(i);
+    CBasePlayerController* cPlayer = (CBasePlayerController*)g_pEntitySystem->GetBaseEntity((CEntityIndex)(i + 1));
+
+    if (!cPlayer || !pAdmin || pAdmin->IsFakeClient() || !pAdmin->IsAdminFlagSet(ADMFLAG_SLAY))
+        continue;
+        ClientPrint(cPlayer, HUD_PRINTTALK, " \1(\2ADMINS CHAT\1) \4%s: \1 \13%s", player->GetPlayerName(), args.ArgS());
+}
+}
+
+CON_COMMAND_CHAT(medic, "medic")
+{
+	if (!player)
 		return;
-	}
 
+	int health = 0;
 	int iPlayer = player->GetPlayerSlot();
 
-	ZEPlayer *pZEPlayer = g_playerManager->GetPlayer(iPlayer);
+	Z_CBaseEntity* pEnt = (Z_CBaseEntity*)player->GetPawn();
 
-	// Something has to really go wrong for this to happen
+	//ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIXM"pZEPlayer testing...");
+
+	ZEPlayer* pZEPlayer = g_playerManager->GetPlayer(iPlayer);
 	if (!pZEPlayer)
 	{
-		Warning("%s Tried to access a null ZEPlayer!!\n", player->GetPlayerName());
+		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX"pZEPlayer not valid.");
 		return;
 	}
 
-	// allows for toggling hide by turning off when hide distance matches.
-	if (pZEPlayer->GetHideDistance() == distance)
-		distance = 0;
-
-	pZEPlayer->SetHideDistance(distance);
-
-	if (distance == 0)
-		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "Hiding teammates is now disabled.");
-	else
-		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "Now hiding teammates within %i units.", distance);
-}
-
-
-#if _DEBUG
-CON_COMMAND_CHAT(message, "message someone")
-{
-	if (!player)
+	if (!pZEPlayer->IsAdminFlagSet(ADMFLAG_CONVARS))
+	{
+		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX"You don't have acces to this command.");
 		return;
+	}
 
-	// Note that the engine will treat this as a player slot number, not an entity index
-	int uid = atoi(args[1]);
+	//ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIXM"pZEPlayer valid.");
 
-	CCSPlayerController* pTarget = CCSPlayerController::FromSlot(uid);
 
-	if (!pTarget)
+
+	if (pZEPlayer->WasUsingMedkit())
+	{
+		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX"You already used your medkit in this round");
 		return;
+	}
 
-	// skipping the id and space, it's dumb but w/e
-	const char *pMessage = args.ArgS() + V_strlen(args[1]) + 1;
-
-	ClientPrint(pTarget, HUD_PRINTTALK, CHAT_PREFIX "Private message from %s to %s: \5%s", player->GetPlayerName(), pTarget->GetPlayerName(), pMessage);
-}
-
-CON_COMMAND_CHAT(say, "say something using console")
-{
-	ClientPrintAll(HUD_PRINTTALK, "%s", args.ArgS());
-}
-
-CON_COMMAND_CHAT(takemoney, "take your money")
-{
-	if (!player)
+	if (pEnt->m_iHealth() < 1)
+	{
+		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX"You need to be alive in order to use medkit.");
 		return;
+	}
 
-	int amount = atoi(args[1]);
-	int money = player->m_pInGameMoneyServices->m_iAccount;
 
-	player->m_pInGameMoneyServices->m_iAccount = money - amount;
-}
-
-CON_COMMAND_CHAT(sethealth, "set your health")
-{
-	if (!player)
+		if (pEnt->m_iHealth() > 99)
+	{
+		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX"You have enough life.");
 		return;
+	}
 
-	int health = atoi(args[1]);
+	health = pEnt->m_iHealth() + 50;
 
-	Z_CBaseEntity *pEnt = (Z_CBaseEntity *)player->GetPawn();
+	if (health > 100)
+		health = 100;
 
 	pEnt->m_iHealth = health;
 
-	ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX"Your health is now %d", health);
+	pZEPlayer->SetUsedMedkit(true);
+
+	ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX"Medkit used! Your health is now \4%d", health);
+	g_pEngineServer2->ClientCommand(player->GetPlayerSlot(), "play items/healthshot_success_01");
 }
-
-CON_COMMAND_CHAT(test_target, "test string targetting")
-{
-	if (!player)
-		return;
-
-	int iCommandPlayer = player->GetPlayerSlot();
-	int iNumClients = 0;
-	int pSlots[MAXPLAYERS];
-
-	g_playerManager->TargetPlayerString(iCommandPlayer, args[1], iNumClients, pSlots);
-
-	for (int i = 0; i < iNumClients; i++)
-	{
-		CCSPlayerController* pTarget = CCSPlayerController::FromSlot(pSlots[i]);
-
-		if (!pTarget)
-			continue;
-
-		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX"Targeting %s", pTarget->GetPlayerName());
-		Message("Targeting %s\n", pTarget->GetPlayerName());
-	}
-}
-
-CON_COMMAND_CHAT(getorigin, "get your origin")
-{
-	if (!player)
-		return;
-
-	Vector vecAbsOrigin = player->GetPawn()->GetAbsOrigin();
-
-	ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX"Your origin is %f %f %f", vecAbsOrigin.x, vecAbsOrigin.y, vecAbsOrigin.z);
-}
-
-CON_COMMAND_CHAT(setorigin, "set your origin")
-{
-	if (!player)
-		return;
-
-	CBasePlayerPawn *pPawn = player->GetPawn();
-	Vector vecNewOrigin;
-	V_StringToVector(args.ArgS(), vecNewOrigin);
-
-	pPawn->SetAbsOrigin(vecNewOrigin);
-
-	ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX"Your origin is now %f %f %f", vecNewOrigin.x, vecNewOrigin.y, vecNewOrigin.z);
-}
-
-CON_COMMAND_CHAT(getstats, "get your stats")
-{
-	if (!player)
-		return;
-
-	CSMatchStats_t *stats = &player->m_pActionTrackingServices->m_matchStats();
-
-	ClientPrint(player, HUD_PRINTCENTER, 
-		"Kills: %i\n"
-		"Deaths: %i\n"
-		"Assists: %i\n"
-		"Damage: %i"
-		, stats->m_iKills.Get(), stats->m_iDeaths.Get(), stats->m_iAssists.Get(), stats->m_iDamage.Get());
-
-	ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX"Kills: %d", stats->m_iKills.Get());
-	ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX"Deaths: %d", stats->m_iDeaths.Get());
-	ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX"Assists: %d", stats->m_iAssists.Get());
-	ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX"Damage: %d", stats->m_iDamage.Get());
-}
-
-CON_COMMAND_CHAT(setkills, "set your kills")
-{
-	if (!player)
-		return;
-
-	player->m_pActionTrackingServices->m_matchStats().m_iKills = atoi(args[1]);
-
-	ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX"You have set your kills to %d.", atoi(args[1]));
-}
-
-CON_COMMAND_CHAT(setcollisiongroup, "set a player's collision group")
-{
-	int iNumClients = 0;
-	int pSlots[MAXPLAYERS];
-
-	g_playerManager->TargetPlayerString(player->GetPlayerSlot(), args[1], iNumClients, pSlots);
-
-	for (int i = 0; i < iNumClients; i++)
-	{
-		CCSPlayerController* pTarget = CCSPlayerController::FromSlot(pSlots[i]);
-
-		if (!pTarget)
-			continue;
-
-		uint8 group = atoi(args[2]);
-		uint8 oldgroup = pTarget->m_hPawn->m_pCollision->m_CollisionGroup;
-
-		pTarget->m_hPawn->m_pCollision->m_CollisionGroup = group;
-		pTarget->m_hPawn->m_pCollision->m_collisionAttribute().m_nCollisionGroup = group;
-		pTarget->GetPawn()->CollisionRulesChanged();
-
-		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "Setting collision group on %s from %d to %d.", pTarget->GetPlayerName(), oldgroup, group);
-	}
-}
-
-CON_COMMAND_CHAT(setsolidtype, "set a player's solid type")
-{
-	int iNumClients = 0;
-	int pSlots[MAXPLAYERS];
-
-	g_playerManager->TargetPlayerString(player->GetPlayerSlot(), args[1], iNumClients, pSlots);
-
-	for (int i = 0; i < iNumClients; i++)
-	{
-		CCSPlayerController* pTarget = CCSPlayerController::FromSlot(pSlots[i]);
-
-		if (!pTarget)
-			continue;
-
-		uint8 type = atoi(args[2]);
-		uint8 oldtype = pTarget->m_hPawn->m_pCollision->m_nSolidType;
-
-		pTarget->m_hPawn->m_pCollision->m_nSolidType = (SolidType_t)type;
-		pTarget->GetPawn()->CollisionRulesChanged();
-
-		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "Setting solid type on %s from %d to %d.", pTarget->GetPlayerName(), oldtype, type);
-	}
-}
-
-CON_COMMAND_CHAT(setinteraction, "set a player's interaction flags")
-{
-	int iNumClients = 0;
-	int pSlots[MAXPLAYERS];
-
-	g_playerManager->TargetPlayerString(player->GetPlayerSlot(), args[1], iNumClients, pSlots);
-
-	for (int i = 0; i < iNumClients; i++)
-	{
-		CCSPlayerController* pTarget = CCSPlayerController::FromSlot(pSlots[i]);
-
-		if (!pTarget)
-			continue;
-
-		uint64 oldInteractAs = pTarget->m_hPawn->m_pCollision->m_collisionAttribute().m_nInteractsAs;
-		uint64 newInteract = oldInteractAs | ((uint64)1 << 53);
-
-		pTarget->m_hPawn->m_pCollision->m_collisionAttribute().m_nInteractsAs = newInteract;
-		pTarget->m_hPawn->m_pCollision->m_collisionAttribute().m_nInteractsExclude = newInteract;
-		pTarget->GetPawn()->CollisionRulesChanged();
-
-		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "Setting interaction flags on %s from %llx to %llx.", pTarget->GetPlayerName(), oldInteractAs, newInteract);
-	}
-}
-
-void HttpCallback(HTTPRequestHandle request, char* response)
-{
-	// Test serializing to JSON
-	json data = json::parse(response, nullptr, false);
-
-	if (data.is_discarded())
-	{
-		Message("Failed parsing JSON!\n");
-		return;
-	}
-
-	ClientPrintAll(HUD_PRINTTALK, data.dump().c_str());
-}
-
-CON_COMMAND_CHAT(http, "test an HTTP request")
-{
-	if (!g_http)
-	{
-		if (player)
-			ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "Steam HTTP interface is not available!");
-		else
-			Message("Steam HTTP interface is not available!\n");
-
-		return;
-	}
-	if (args.ArgC() < 3)
-	{
-		if (player)
-			ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX "Usage: !http <get/post> <url> [content]");
-		else
-			Message("Usage: !http <get/post> <url> [content]\n");
-
-		return;
-	}
-
-	if (strcmp(args[1], "get") == 0)
-		g_HTTPManager.GET(args[2], &HttpCallback);
-	else if (strcmp(args[1], "post") == 0)
-		g_HTTPManager.POST(args[2], args[3], &HttpCallback);
-}
-#endif // _DEBUG
 
 // Lookup a weapon classname in the weapon map and "initialize" it.
 // Both m_bInitialized and m_iItemDefinitionIndex need to be set for a weapon to be pickable and not crash clients,

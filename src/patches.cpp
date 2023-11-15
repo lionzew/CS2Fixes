@@ -32,7 +32,6 @@
 
 CMemPatch g_CommonPatches[] =
 {
-	CMemPatch("ServerMovementUnlock", "ServerMovementUnlock"),
 	CMemPatch("VScriptEnable", "VScriptEnable"),
 	CMemPatch("CheckJumpButtonWater", "FixWaterFloorJump"),
 	CMemPatch("CategorizeUnderwater", "CategorizeUnderwater"),
@@ -41,7 +40,6 @@ CMemPatch g_CommonPatches[] =
 
 CMemPatch g_ClientPatches[] =
 {
-	CMemPatch("ClientMovementUnlock", "ClientMovementUnlock"),
 };
 
 #ifdef _WIN32

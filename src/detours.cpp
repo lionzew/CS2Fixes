@@ -32,10 +32,10 @@
 #include "entity/ccsweaponbase.h"
 #include "entity/ctriggerpush.h"
 #include "entity/cgamerules.h"
-#include "entity/ctakedamageinfo.h"
 #include "playermanager.h"
 #include "igameevents.h"
 #include "gameconfig.h"
+#include "httpmanager.h"
 
 #define VPROF_ENABLED
 #include "tier0/vprof.h"
@@ -47,6 +47,7 @@ extern CEntitySystem *g_pEntitySystem;
 extern IGameEventManager2 *g_gameEventManager;
 extern CCSGameRules *g_pGameRules;
 
+DECLARE_DETOUR(Host_Say, Detour_Host_Say);
 DECLARE_DETOUR(UTIL_SayTextFilter, Detour_UTIL_SayTextFilter);
 DECLARE_DETOUR(UTIL_SayText2Filter, Detour_UTIL_SayText2Filter);
 DECLARE_DETOUR(IsHearingClient, Detour_IsHearingClient);
@@ -54,44 +55,11 @@ DECLARE_DETOUR(CSoundEmitterSystem_EmitSound, Detour_CSoundEmitterSystem_EmitSou
 DECLARE_DETOUR(CCSWeaponBase_Spawn, Detour_CCSWeaponBase_Spawn);
 DECLARE_DETOUR(TriggerPush_Touch, Detour_TriggerPush_Touch);
 DECLARE_DETOUR(CGameRules_Constructor, Detour_CGameRules_Constructor);
-DECLARE_DETOUR(CBaseEntity_TakeDamageOld, Detour_CBaseEntity_TakeDamageOld);
 
 void FASTCALL Detour_CGameRules_Constructor(CGameRules *pThis)
 {
 	g_pGameRules = (CCSGameRules*)pThis;
 	CGameRules_Constructor(pThis);
-}
-
-void FASTCALL Detour_CBaseEntity_TakeDamageOld(Z_CBaseEntity *pThis, CTakeDamageInfo *inputInfo)
-{
-#ifdef _DEBUG
-	Message("\n--------------------------------\n"
-			"TakeDamage on %s\n"
-			"Attacker: %s\n"
-			"Inflictor: %s\n"
-			"Ability: %s\n"
-			"Damage: %.2f\n"
-			"Damage Type: %i\n"
-			"--------------------------------\n",
-			pThis->GetClassname(),
-			inputInfo->m_hAttacker.Get() ? inputInfo->m_hAttacker.Get()->GetClassname() : "NULL",
-			inputInfo->m_hInflictor.Get() ? inputInfo->m_hInflictor.Get()->GetClassname() : "NULL",
-			inputInfo->m_hAbility.Get() ? inputInfo->m_hAbility.Get()->GetClassname() : "NULL",
-			inputInfo->m_flDamage,
-			inputInfo->m_bitsDamageType);
-#endif
-	CBaseEntity *pInflictor = inputInfo->m_hInflictor.Get();
-	const char *pszInflictorClass = pInflictor ? pInflictor->GetClassname() : "";
-
-	// Prevent everything but nades from inflicting blast damage
-	if (inputInfo->m_bitsDamageType == DamageTypes_t::DMG_BLAST && V_strncmp(pszInflictorClass, "hegrenade", 9))
-		inputInfo->m_bitsDamageType = DamageTypes_t::DMG_GENERIC;
-
-	// Prevent molly on self
-	if (inputInfo->m_hAttacker == pThis && !V_strncmp(pszInflictorClass, "inferno", 7))
-		return;
-
-	CBaseEntity_TakeDamageOld(pThis, inputInfo);
 }
 
 void FASTCALL Detour_TriggerPush_Touch(CTriggerPush* pPush, Z_CBaseEntity* pOther)
@@ -201,6 +169,7 @@ void FASTCALL Detour_UTIL_SayTextFilter(IRecipientFilter &filter, const char *pT
 	UTIL_SayTextFilter(filter, buf, pPlayer, eMessageType);
 }
 
+
 void FASTCALL Detour_UTIL_SayText2Filter(
 	IRecipientFilter &filter,
 	CCSPlayerController *pEntity,
@@ -211,15 +180,82 @@ void FASTCALL Detour_UTIL_SayText2Filter(
 	const char *param3,
 	const char *param4)
 {
-#ifdef _DEBUG
-    CPlayerSlot slot = filter.GetRecipientIndex(0);
-	CCSPlayerController* target = CCSPlayerController::FromSlot(slot);
+	int entindex = filter.GetRecipientIndex(0).Get() + 1;
+	CCSPlayerController *target = (CCSPlayerController *)g_pEntitySystem->GetBaseEntity((CEntityIndex)entindex);
 
-	if (target)
-		Message("Chat from %s to %s: %s\n", param1, target->GetPlayerName(), param2);
-#endif
+	     int iCommandPlayer = pEntity->GetPlayerSlot();
 
-	UTIL_SayText2Filter(filter, pEntity, eMessageType, msg_name, param1, param2, param3, param4);
+    ZEPlayer *pPlayer = g_playerManager->GetPlayer(iCommandPlayer);
+	
+		char sBuffer[256];
+        if (pPlayer->IsAdminFlagSet(ADMFLAG_CUSTOM1)) // o
+        {
+            V_snprintf(sBuffer, sizeof(sBuffer), " \1[\13HELPER\1] \10%s: \4%s", param1, param2);
+        }
+        else if (pPlayer->IsAdminFlagSet(ADMFLAG_CUSTOM2)) // p
+        {
+            V_snprintf(sBuffer, sizeof(sBuffer), " \1[\14ADMINISTRATOR\1] \10%s: \4%s", param1, param2);
+        }
+        else if (pPlayer->IsAdminFlagSet(ADMFLAG_CUSTOM3)) // q
+        {
+            V_snprintf(sBuffer, sizeof(sBuffer), " \1[\4MODERATOR\1]\10 %s: \4%s", param1, param2);
+        }
+        else if (pPlayer->IsAdminFlagSet(ADMFLAG_CUSTOM4)) // r
+        {
+            V_snprintf(sBuffer, sizeof(sBuffer), " \1[\7VETERAN\1]\10 %s: \4%s", param1, param2);
+        }
+		else if (pPlayer->IsAdminFlagSet(ADMFLAG_CUSTOM7)) // u
+        {
+            V_snprintf(sBuffer, sizeof(sBuffer), " \1[\11TESTER\1]\10 %s: \4%s", param1, param2);
+        }
+		else if (pPlayer->IsAdminFlagSet(ADMFLAG_CUSTOM5)) // s
+        {
+            V_snprintf(sBuffer, sizeof(sBuffer), " \1[\7MANAGER\1]\10 %s: \4%s", param1, param2);
+        }
+        else if (pPlayer->IsAdminFlagSet(ADMFLAG_CUSTOM8)) // v
+        {
+            V_snprintf(sBuffer, sizeof(sBuffer), " \1[\20SUPERVIZOR\1]\10 %s: \4%s", param1, param2);
+        }
+        else if (pPlayer->IsAdminFlagSet(ADMFLAG_CUSTOM6)) // t
+        {
+            V_snprintf(sBuffer, sizeof(sBuffer), " \1[\2CO-OWNER\1]\14 %s: \4%s", param1, param2);
+        }
+        else if (pPlayer->IsAdminFlagSet(ADMFLAG_CHEATS))
+        {
+            V_snprintf(sBuffer, sizeof(sBuffer), " \1[\2OWNER\1]\14 %s: \2%s", param1, param2);
+        }
+        else {
+            V_snprintf(sBuffer, sizeof(sBuffer), " \1[\4Player\1]\1 %s: \1%s", param1, param2);
+        }
+    
+    UTIL_SayTextFilter(filter, sBuffer, pEntity, eMessageType);
+}
+
+void FASTCALL Detour_Host_Say(CCSPlayerController *pController, CCommand &args, bool teamonly, int unk1, const char *unk2)
+{
+	bool bGagged = pController && pController->GetZEPlayer()->IsGagged();
+
+	if (!bGagged && *args[1] != '/')
+	{
+		Host_Say(pController, args, teamonly, unk1, unk2);
+
+		if (pController)
+		{
+			IGameEvent *pEvent = g_gameEventManager->CreateEvent("player_chat");
+
+			if (pEvent)
+			{
+				pEvent->SetBool("teamonly", teamonly);
+				pEvent->SetInt("userid", pController->entindex());
+				pEvent->SetString("text", args[1]);
+
+				g_gameEventManager->FireEvent(pEvent, true);
+			}
+		}
+	}
+
+	if (*args[1] == '!' || *args[1] == '/')
+		ParseChatCommand(args.ArgS() + 1, pController); // The string returned by ArgS() starts with a \, so skip it
 }
 
 void Detour_Log()
@@ -292,6 +328,10 @@ bool InitDetours(CGameConfig *gameConfig)
 		success = false;
 	UTIL_SayText2Filter.EnableDetour();
 
+	if (!Host_Say.CreateDetour(gameConfig))
+		success = false;
+	Host_Say.EnableDetour();
+
 	if (!IsHearingClient.CreateDetour(gameConfig))
 		success = false;
 	IsHearingClient.EnableDetour();
@@ -311,10 +351,6 @@ bool InitDetours(CGameConfig *gameConfig)
 	if (!CGameRules_Constructor.CreateDetour(gameConfig))
 		success = false;
 	CGameRules_Constructor.EnableDetour();
-
-	if (!CBaseEntity_TakeDamageOld.CreateDetour(gameConfig))
-		success = false;
-	CBaseEntity_TakeDamageOld.EnableDetour();
 
 	return success;
 }
