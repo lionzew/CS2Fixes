@@ -55,6 +55,7 @@ public:
 		m_flExtendVoteTime = 0;
 		m_iFloodTokens = 0;
 		m_flLastTalkTime = 0;
+		m_bUsedMedkit = false;
 	}
 
 	bool IsFakeClient() { return m_bFakeClient; }
@@ -92,12 +93,16 @@ public:
 	float GetRTVVoteTime() { return m_flRTVVoteTime; }
 	bool GetExtendVote() { return m_bVotedExtend; }
 	float GetExtendVoteTime() { return m_flExtendVoteTime; }
-	
+
+	bool WasUsingMedkit() { return m_bUsedMedkit; }
+	void SetUsedMedkit(bool used) { m_bUsedMedkit = used; }
+
 	void OnAuthenticated();
 	void CheckAdmin();
 	void CheckInfractions();
 
 private:
+	bool m_bUsedMedkit;
 	bool m_bAuthenticated;
 	bool m_bConnected;
 	const CSteamID* m_SteamID;
