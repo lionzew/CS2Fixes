@@ -163,10 +163,6 @@ GAME_EVENT_F(player_spawn)
         {
             pController->m_szClan("[MODERATOR]");
         }
-        else if (pZEPlayer->IsAdminFlagSet(ADMFLAG_CUSTOM4))
-        {
-            pController->m_szClan("[VETERAN]");
-        }
         else if (pZEPlayer->IsAdminFlagSet(ADMFLAG_CUSTOM5))
         {
             pController->m_szClan("[MANAGER]");
@@ -174,14 +170,6 @@ GAME_EVENT_F(player_spawn)
         else if (pZEPlayer->IsAdminFlagSet(ADMFLAG_CUSTOM6))
         {
             pController->m_szClan("[CO-OWNER]");
-        }
-		else if (pZEPlayer->IsAdminFlagSet(ADMFLAG_CUSTOM7))
-        {
-            pController->m_szClan("[TESTER]");
-        }
-		else if (pZEPlayer->IsAdminFlagSet(ADMFLAG_CUSTOM8))
-        {
-            pController->m_szClan("[SUPERVIZOR]");
         }
         else if (pZEPlayer->IsAdminFlagSet(ADMFLAG_CHEATS))
         {
