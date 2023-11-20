@@ -223,7 +223,7 @@ CON_COMMAND_CHAT(vipinfo, "vip info")
 	ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX"\1Money add every round: \4 1000-3000.");
 	ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX"\1Starting with: \4 defeuser, he, smoke, molotov, flashbang.");
 	ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX"\1Smoke color: \4 green.");
-	ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX"\1For buying VIP, join our discord: \4 discord.gg/1tap.");
+	ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX"\1For buying VIP, join our discord: \4 https://discord.com/invite/F5MJ3gKeD2");
 }
 
 // make a command that prints test
@@ -238,7 +238,7 @@ CON_COMMAND_CHAT(vip, "vip info")
 	ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX"\1Money add every round: \4 1000-3000.");
 	ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX"\1Starting with: \4 defeuser, he, smoke, molotov, flashbang.");
 	ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX"\1Smoke color: \4 green.");
-	ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX"\1For buying VIP, join our discord: \4 discord.gg/1tap.");
+	ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX"\1For buying VIP, join our discord: \4 https://discord.com/invite/F5MJ3gKeD2");
 }
 
 CON_COMMAND_CHAT(rs, "reset your score")
@@ -265,7 +265,7 @@ CON_COMMAND_CHAT(ws, "reset your score")
 	ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX"-------------------------------------------------");
 	ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX" \x01 Foloseste comanda \x06skin <skin_id> \x01in CONSOLA!");
 	ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX" \x01 Pentru a gasi \x06skin_id \x01poti folosi site-ul \x06 csgostash.com !");
-	ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX" \x01 Mai multe detalii pe \x06 discord.gg/1tap!");
+	ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX" \x01 Mai multe detalii pe \x06 https://discord.com/invite/F5MJ3gKeD2");
 	ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX"-------------------------------------------------");
 }
 
@@ -301,13 +301,13 @@ CON_COMMAND_CHAT(who, "get list of all admin players online")
 
     const char* pszCustomNames[] = {
         "Helper",
-        "Administrator",
+        "Admin",
         "Moderator",
-        "Veteran",
-		"Manager",
-		"Co-Owner",
-		"Tester",
-		"Supervizor",
+        "Manager",
+	"Superuser",
+	"Editor",
+	"Co-Owner",
+	"Owner"
     };
 
     const int iNumFlags = sizeof(pszFlagNames) / sizeof(pszFlagNames[0]);
@@ -320,8 +320,8 @@ CON_COMMAND_CHAT(who, "get list of all admin players online")
         ADMFLAG_CUSTOM5,
         ADMFLAG_CUSTOM6,
         ADMFLAG_CUSTOM7,
-        ADMFLAG_CUSTOM8,
-        ADMFLAG_CUSTOM9
+        ADMFLAG_CUSTOM8
+     
     };
 
     for (int i = 1; i <= gpGlobals->maxClients; i++)
@@ -403,7 +403,7 @@ CON_COMMAND_CHAT(medic, "medic")
 		return;
 	}
 
-	if (!pZEPlayer->IsAdminFlagSet(ADMFLAG_CONVARS))
+	if (!pZEPlayer->IsAdminFlagSet(ADMFLAG_CUSTOM10))//x
 	{
 		ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX"You don't have acces to this command.");
 		return;
