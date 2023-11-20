@@ -23,7 +23,7 @@
 #include "adminsystem.h"
 
 #define COMMAND_PREFIX "c_"
-#define CHAT_PREFIX	" \7[1TAP]\1 "
+#define CHAT_PREFIX	" \7[OG]\1 "
 
 typedef void (*FnChatCommandCallback_t)(const CCommand &args, CCSPlayerController *player);
 
