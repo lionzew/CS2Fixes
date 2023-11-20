@@ -153,39 +153,39 @@ GAME_EVENT_F(player_spawn)
 
 		if (pZEPlayer->IsAdminFlagSet(ADMFLAG_CUSTOM1))
         {
-            pController->m_szClan("✪HELPER");
+            pController->m_szClan("★ Helper ★");
         }
         else if (pZEPlayer->IsAdminFlagSet(ADMFLAG_CUSTOM2))
         {
-            pController->m_szClan("✪ADMIN");
+            pController->m_szClan("★ Admin ★");
         }
         else if (pZEPlayer->IsAdminFlagSet(ADMFLAG_CUSTOM3))
         {
-            pController->m_szClan("✪MODERATOR");
+            pController->m_szClan("★ Mod ★");
         }
         else if (pZEPlayer->IsAdminFlagSet(ADMFLAG_CUSTOM4))
         {
-            pController->m_szClan("✪MANAGER");
+            pController->m_szClan("★ Manager ★");
         }
         else if (pZEPlayer->IsAdminFlagSet(ADMFLAG_CUSTOM5))
         {
-            pController->m_szClan("✪SUPERUSER");
+            pController->m_szClan("★ Gold Member ★");
         }
         else if (pZEPlayer->IsAdminFlagSet(ADMFLAG_CUSTOM6))
         {
-            pController->m_szClan("✪EDITOR");
+            pController->m_szClan("★ Co-Owner ★");
         }
 		else if (pZEPlayer->IsAdminFlagSet(ADMFLAG_CUSTOM7))
         {
-            pController->m_szClan("✪CO-OWNER");
+            pController->m_szClan("★ Owner ★");
         }
 		else if (pZEPlayer->IsAdminFlagSet(ADMFLAG_CUSTOM8))
         {
-            pController->m_szClan("✪OWNER");
+            pController->m_szClan("★ Fondator ★");
         }
         
         else {
-			pController->m_szClan("✪");
+			pController->m_szClan("★");
         }	
 
 		return -1.0f;
