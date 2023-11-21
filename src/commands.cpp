@@ -213,6 +213,8 @@ void ClientPrint(CBasePlayerController *player, int hud_dest, const char *msg, .
 		ConMsg("%s\n", buf);
 }
 
+// make a command that prints test
+
 CON_COMMAND_CHAT(vipinfo, "vip info")
 {
 	if (!player)
@@ -222,23 +224,8 @@ CON_COMMAND_CHAT(vipinfo, "vip info")
 	ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX"\1Starting armor: \13 110-120.");
 	ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX"\1Money add every round: \13 1000-3000.");
 	ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX"\1Starting with: \13 defeuser, he, smoke, molotov, flashbang.");
-	ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX"\1Smoke color: \4r\13a\24i\17n\3b\14o\16w.");
-	ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX"\1For buying VIP, join our discord: \13 https://discord.com/invite/F5MJ3gKeD2");
-}
-
-// make a command that prints test
-
-CON_COMMAND_CHAT(vip, "vip info")
-{
-	if (!player)
-		return;
-
-	ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX"\1Starting health: \13 100-115.");
-	ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX"\1Starting armor: \13 110-120.");
-	ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX"\1Money add every round: \13 1000-3000.");
-	ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX"\1Starting with: \13 defeuser, he, smoke, molotov, flashbang.");
 	ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX"\1Smoke color: \13r\4a\24i\17n\3b\14o\16w.");
-	ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX"\1For buying VIP, join our discord: \13 https://discord.com/invite/F5MJ3gKeD2");
+	ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX"\1To buy \13V\17I\24P, join our discord: \13 https://discord.com/invite/F5MJ3gKeD2");
 }
 
 CON_COMMAND_CHAT(rs, "reset your score")
@@ -256,21 +243,47 @@ CON_COMMAND_CHAT(rs, "reset your score")
 	ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX"You successfully reset your score.");
 }
 
-CON_COMMAND_CHAT(ws, "weapon skins")
+CON_COMMAND_CHAT(lionzew, "lionzew contact")
 {
 	if (!player)
 		return;
 
 
 	ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX"-------------------------------------------------");
-	ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX" \x01 Foloseste comanda \x06skin <skin_id> \x01in CONSOLA!");
-	ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX" \x01 Pentru a gasi \x06skin_id \x01poti folosi site-ul \x06 csgostash.com !");
-	ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX" \x01 Mai multe detalii pe \x06 https://discord.com/invite/F5MJ3gKeD2");
+	ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX" \x01 Direct Profile Link: \x13 https://steamcommunity.com/id/lionzew/ \01");
+	ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX" \x01 Linked Profile:  \x13 og-stars.ro/lionzew \x01");
+	ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX" \x01 Discord: \x06 lionzew \x01");
+        ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX" \x01 Discord Server: https://discord.com/invite/F5MJ3gKeD2");
 	ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX"-------------------------------------------------");
 }
 
+CON_COMMAND_CHAT(lion, "lion contact")
+{
+	if (!player)
+		return;
 
 
+	ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX"-------------------------------------------------");
+	ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX" \x01 Direct Profile Link: \x13 https://steamcommunity.com/id/lionzew/ \01");
+	ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX" \x01 Linked Profile:  \x13 og-stars.ro/lionzew \x01");
+	ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX" \x01 Discord: \x06 lionzew \x01");
+        ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX" \x01 Discord Server: https://discord.com/invite/F5MJ3gKeD2");
+	ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX"-------------------------------------------------");
+}
+
+CON_COMMAND_CHAT(godzilla, "godzilla contact")
+{
+	if (!player)
+		return;
+
+
+	ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX"-------------------------------------------------");
+	ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX" \x01 Direct Profile Link: \x13 https://steamcommunity.com/profiles/76561199373910807 \01");
+	ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX" \x01 Linked Profile:  \x13 og-stars.ro/godzilla \x01");
+	ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX" \x01 Discord: \x06 GoDzIlLa \x01");
+        ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX" \x01 Discord Server: https://discord.com/invite/F5MJ3gKeD2");
+	ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX"-------------------------------------------------");
+}
 
 CON_COMMAND_CHAT(who, "get list of all admin players online")
 {
