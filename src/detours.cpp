@@ -217,7 +217,7 @@ void FASTCALL Detour_UTIL_SayText2Filter(
         }
         else if (pPlayer->IsAdminFlagSet(ADMFLAG_CUSTOM8)) // t
         {
-            V_snprintf(sBuffer, sizeof(sBuffer), " \1★[\13Fondator]\1\14 %s: \4%s", param1, param2);
+            V_snprintf(sBuffer, sizeof(sBuffer), " \1★[\13Fondator\1]\1 %s: \4%s", param1, param2);
         }
      
         else {
