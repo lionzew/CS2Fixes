@@ -243,6 +243,29 @@ CON_COMMAND_CHAT(rs, "reset your score")
 	ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX"You successfully reset your score.");
 }
 
+CON_COMMAND_CHAT(preturi, "price info")
+{
+	if (!player)
+		return;
+
+
+	ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX"-------------------------------------------------");
+        ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX" \x01 Discord Server: https://discord.com/invite/F5MJ3gKeD2");
+	ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX"-------------------------------------------------");
+}
+
+CON_COMMAND_CHAT(prices, "prices info")
+{
+	if (!player)
+		return;
+
+
+	ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX"-------------------------------------------------");
+        ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX" \x01 Discord Server: https://discord.com/invite/F5MJ3gKeD2");
+	ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX"-------------------------------------------------");
+}
+
+
 CON_COMMAND_CHAT(lionzew, "lionzew contact")
 {
 	if (!player)
@@ -253,6 +276,17 @@ CON_COMMAND_CHAT(lionzew, "lionzew contact")
 	ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX" \x01 Direct Profile Link: \x13 https://steamcommunity.com/id/lionzew/ \01");
 	ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX" \x01 Linked Profile:  \x13 og-stars.ro/lionzew \x01");
 	ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX" \x01 Discord: \x06 lionzew \x01");
+        ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX" \x01 Discord Server: https://discord.com/invite/F5MJ3gKeD2");
+	ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX"-------------------------------------------------");
+}
+
+CON_COMMAND_CHAT(discord, "discord")
+{
+	if (!player)
+		return;
+
+
+	ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX"-------------------------------------------------");
         ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX" \x01 Discord Server: https://discord.com/invite/F5MJ3gKeD2");
 	ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX"-------------------------------------------------");
 }
