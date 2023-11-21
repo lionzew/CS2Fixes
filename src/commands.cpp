@@ -218,12 +218,12 @@ CON_COMMAND_CHAT(vipinfo, "vip info")
 	if (!player)
 		return;
 
-	ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX"\1Starting health: \4 100-115.");
-	ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX"\1Starting armor: \4 110-120.");
-	ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX"\1Money add every round: \4 1000-3000.");
-	ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX"\1Starting with: \4 defeuser, he, smoke, molotov, flashbang.");
-	ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX"\1Smoke color: \4 green.");
-	ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX"\1For buying VIP, join our discord: \4 https://discord.com/invite/F5MJ3gKeD2");
+	ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX"\1Starting health: \13 100-115.");
+	ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX"\1Starting armor: \13 110-120.");
+	ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX"\1Money add every round: \13 1000-3000.");
+	ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX"\1Starting with: \13 defeuser, he, smoke, molotov, flashbang.");
+	ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX"\1Smoke color: \4r\13a\24i\17n\3b\14o\16w.");
+	ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX"\1For buying VIP, join our discord: \13 https://discord.com/invite/F5MJ3gKeD2");
 }
 
 // make a command that prints test
@@ -233,12 +233,12 @@ CON_COMMAND_CHAT(vip, "vip info")
 	if (!player)
 		return;
 
-	ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX"\1Starting health: \4 100-115.");
-	ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX"\1Starting armor: \4 110-120.");
-	ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX"\1Money add every round: \4 1000-3000.");
-	ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX"\1Starting with: \4 defeuser, he, smoke, molotov, flashbang.");
-	ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX"\1Smoke color: \4 green.");
-	ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX"\1For buying VIP, join our discord: \4 https://discord.com/invite/F5MJ3gKeD2");
+	ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX"\1Starting health: \13 100-115.");
+	ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX"\1Starting armor: \13 110-120.");
+	ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX"\1Money add every round: \13 1000-3000.");
+	ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX"\1Starting with: \13 defeuser, he, smoke, molotov, flashbang.");
+	ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX"\1Smoke color: \13r\4a\24i\17n\3b\14o\16w.");
+	ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX"\1For buying VIP, join our discord: \13 https://discord.com/invite/F5MJ3gKeD2");
 }
 
 CON_COMMAND_CHAT(rs, "reset your score")
@@ -256,7 +256,7 @@ CON_COMMAND_CHAT(rs, "reset your score")
 	ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX"You successfully reset your score.");
 }
 
-CON_COMMAND_CHAT(ws, "reset your score")
+CON_COMMAND_CHAT(ws, "weapon skins")
 {
 	if (!player)
 		return;
@@ -302,12 +302,12 @@ CON_COMMAND_CHAT(who, "get list of all admin players online")
     const char* pszCustomNames[] = {
         "Helper",
         "Admin",
-        "Moderator",
+        "Mod",
         "Manager",
-	"Superuser",
-	"Editor",
+	"Gold Member",
 	"Co-Owner",
-	"Owner"
+	"Owner",
+	"Fondator"
     };
 
     const int iNumFlags = sizeof(pszFlagNames) / sizeof(pszFlagNames[0]);
