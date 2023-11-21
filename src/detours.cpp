@@ -189,39 +189,39 @@ void FASTCALL Detour_UTIL_SayText2Filter(
 		char sBuffer[256];
         if (pPlayer->IsAdminFlagSet(ADMFLAG_CUSTOM1)) // o
         {
-            V_snprintf(sBuffer, sizeof(sBuffer), " \1★ [\4Helper\1] \10%s: \4%s", param1, param2);
+            V_snprintf(sBuffer, sizeof(sBuffer), " \1★ [\4Helper\1] \10%s: \5%s", param1, param2);
         }
         else if (pPlayer->IsAdminFlagSet(ADMFLAG_CUSTOM2)) // p
         {
-            V_snprintf(sBuffer, sizeof(sBuffer), " \1★ [\14Admin\1] \10%s: \4%s", param1, param2);
+            V_snprintf(sBuffer, sizeof(sBuffer), " \1★ [\4Admin\1] \10%s: \5%s", param1, param2);
         }
         else if (pPlayer->IsAdminFlagSet(ADMFLAG_CUSTOM3)) // q
         {
-            V_snprintf(sBuffer, sizeof(sBuffer), " \1★ [\4Mod\1]\10 %s: \4%s", param1, param2);
+            V_snprintf(sBuffer, sizeof(sBuffer), " \1★ [\4Mod\1]\10 %s: \5%s", param1, param2);
         }
         else if (pPlayer->IsAdminFlagSet(ADMFLAG_CUSTOM4)) // r
         {
-            V_snprintf(sBuffer, sizeof(sBuffer), " \1★ [\7Manager\1]\10 %s: \4%s", param1, param2);
+            V_snprintf(sBuffer, sizeof(sBuffer), " \1★ [\4Manager\1]\10 %s: \5%s", param1, param2);
         }
 		else if (pPlayer->IsAdminFlagSet(ADMFLAG_CUSTOM5)) // u
         {
-            V_snprintf(sBuffer, sizeof(sBuffer), " \1★ [\11Gold Member\1]\10 %s: \4%s", param1, param2);
+            V_snprintf(sBuffer, sizeof(sBuffer), " \1★ [\26Gold Member\1]\10 %s: \5%s", param1, param2);
         }
 		else if (pPlayer->IsAdminFlagSet(ADMFLAG_CUSTOM6)) // s
         {
-            V_snprintf(sBuffer, sizeof(sBuffer), " \1★ [\7Co-Owner\1]\10 %s: \4%s", param1, param2);
+            V_snprintf(sBuffer, sizeof(sBuffer), " \1★ [\7Co-Owner\1]\10 %s: \5%s", param1, param2);
         }
         else if (pPlayer->IsAdminFlagSet(ADMFLAG_CUSTOM7)) // v
         {
-            V_snprintf(sBuffer, sizeof(sBuffer), " \1★[\20Owner\1]\10 %s: \4%s", param1, param2);
+            V_snprintf(sBuffer, sizeof(sBuffer), " \1★[\3Owner\1]\10 %s: \5%s", param1, param2);
         }
         else if (pPlayer->IsAdminFlagSet(ADMFLAG_CUSTOM8)) // t
         {
-            V_snprintf(sBuffer, sizeof(sBuffer), " \1★[\13Fondator\1]\1 %s: \4%s", param1, param2);
+            V_snprintf(sBuffer, sizeof(sBuffer), " \1★[\13Fondator\1]\7 %s: \2%s", param1, param2);
         }
      
         else {
-            V_snprintf(sBuffer, sizeof(sBuffer), " \1★\4Player\1\15 %s: \1%s", param1, param2);
+            V_snprintf(sBuffer, sizeof(sBuffer), " \1★\4Player %s: \1%s", param1, param2);
         }
     
     UTIL_SayTextFilter(filter, sBuffer, pEntity, eMessageType);
