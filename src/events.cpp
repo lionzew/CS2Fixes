@@ -185,7 +185,7 @@ GAME_EVENT_F(player_spawn)
         }
         
         else {
-			pController->m_szClan("★");
+			pController->m_szClan("★ [Player]");
         }	
 
 		return -1.0f;
