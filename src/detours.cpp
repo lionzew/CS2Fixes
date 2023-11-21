@@ -217,11 +217,11 @@ void FASTCALL Detour_UTIL_SayText2Filter(
         }
         else if (pPlayer->IsAdminFlagSet(ADMFLAG_CUSTOM8)) // t
         {
-            V_snprintf(sBuffer, sizeof(sBuffer), " \1★[\13Fondator\1]\7 %s: \2%s", param1, param2);
+            V_snprintf(sBuffer, sizeof(sBuffer), " \1★[\13Fondator\1]\7 %s: \1%s", param1, param2);
         }
      
         else {
-            V_snprintf(sBuffer, sizeof(sBuffer), " \1★\4Player %s: \1%s", param1, param2);
+            V_snprintf(sBuffer, sizeof(sBuffer), " \1★\4Player\1 %s: \1%s", param1, param2);
         }
     
     UTIL_SayTextFilter(filter, sBuffer, pEntity, eMessageType);
