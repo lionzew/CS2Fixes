@@ -220,12 +220,13 @@ CON_COMMAND_CHAT(vipinfo, "vip info")
 	if (!player)
 		return;
 
-	ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX"\1Starting health: \13 100-115.");
-	ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX"\1Starting armor: \13 110-120.");
-	ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX"\1Money add every round: \13 1000-3000.");
-	ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX"\1Starting with: \13 defeuser, he, smoke, molotov, flashbang.");
-	ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX"\1Smoke color: \13r\4a\24i\17n\3b\14o\16w.");
-	ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX"\1To buy \13V\17I\24P, join our discord: \13 https://discord.com/invite/F5MJ3gKeD2");
+	ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX"\1Starting health: \13 125.");
+	ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX"\1Starting armor: \13 250.");
+	ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX"\1Money add every round: \13 3000.");
+        ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX"\1Player Color: \13R\4a\24i\17n\3b\14o\16w\1.");
+	ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX"\1Starting with: \13Deagle, Nade, Smoke, Molotov.");
+	ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX"\1Smoke color: \13R\4a\24i\17n\3b\14o\16w\1.");
+	ClientPrint(player, HUD_PRINTTALK, CHAT_PREFIX"\1To buy \13V\2I\16P\1, join our discord: \13 https://discord.com/invite/F5MJ3gKeD2");
 }
 
 CON_COMMAND_CHAT(rs, "reset your score")
